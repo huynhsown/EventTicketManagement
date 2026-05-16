@@ -3,25 +3,25 @@ version: '3.8'
 services:
   postgresql:
     image: postgres:16
-    container_name: perf-postgres
+    container_name: ticket-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: perf_user
-      POSTGRES_PASSWORD: perf_pass
-      POSTGRES_DB: performance_db
+      POSTGRES_USER: ticket_user
+      POSTGRES_PASSWORD: ticket_pass
+      POSTGRES_DB: ticket_db
     ports:
       - "5432:5432"
     volumes:
-      - per_postgres_data:/var/lib/postgresql/data
+      - ticket_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U perf_user -d performance_db"]
+      test: ["CMD-SHELL", "pg_isready -U ticket_user -d ticket_db"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: perf-prometheus
+    container_name: ticket-prometheus
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -29,7 +29,7 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - per_prometheus_data:/prometheus
+      - ticket_prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -44,7 +44,7 @@ services:
 
   grafana:
     image: grafana/grafana:latest
-    container_name: perf-grafana
+    container_name: ticket-grafana
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -53,7 +53,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_INSTALL_PLUGINS: ""
     volumes:
-      - per_grafana_data:/var/lib/grafana
+      - ticket_grafana_data:/var/lib/grafana
       - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana/datasources:/etc/grafana/provisioning/datasources
     depends_on:
@@ -75,18 +75,18 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     volumes:
-      - per_keycloak_data:/opt/keycloak/data
+      - ticket_keycloak_data:/opt/keycloak/data
     command:
       - start-dev
 
   redis:
     image: redis:8
-    container_name: perf-redis
+    container_name: ticket-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
-      - per_redis_data:/data
+      - ticket_redis_data:/data
     command:
       - redis-server
       - --appendonly yes
@@ -98,10 +98,10 @@ services:
 
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter:latest
-    container_name: perf-postgres-exporter
+    container_name: ticket-postgres-exporter
     restart: unless-stopped
     environment:
-      DATA_SOURCE_NAME: "postgresql://perf_user:perf_pass@postgresql:5432/performance_db?sslmode=disable"
+      DATA_SOURCE_NAME: "postgresql://ticket_user:ticket_pass@postgresql:5432/ticket_db?sslmode=disable"
     ports:
       - "9187:9187"
     depends_on:
@@ -110,7 +110,7 @@ services:
 
   node-exporter:
     image: prom/node-exporter:latest
-    container_name: perf-node-exporter
+    container_name: ticket-node-exporter
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -128,7 +128,7 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
-    container_name: perf-cadvisor
+    container_name: ticket-cadvisor
     restart: unless-stopped
     ports:
       - "8089:8080"
@@ -143,10 +143,10 @@ services:
       - /dev/kmsg
 
 volumes:
-  per_postgres_data:
-  per_prometheus_data:
-  per_grafana_data:
-  per_keycloak_data:
-  per_redis_data:
+  ticket_postgres_data:
+  ticket_prometheus_data:
+  ticket_grafana_data:
+  ticket_keycloak_data:
+  ticket_redis_data:
 
 
