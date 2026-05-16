@@ -1,4 +1,4 @@
-package com.urlshortener.common.exception;
+package com.ute.ticket.shared.exception;
 
 public class ForbiddenException extends RuntimeException {
     public ForbiddenException() {
@@ -13,4 +13,3 @@ public class ForbiddenException extends RuntimeException {
         super(message, cause);
     }
 }
-

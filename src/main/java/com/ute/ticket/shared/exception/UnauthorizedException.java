@@ -1,4 +1,4 @@
-package com.urlshortener.common.exception;
+package com.ute.ticket.shared.exception;
 
 public class UnauthorizedException extends RuntimeException {
     public UnauthorizedException() {

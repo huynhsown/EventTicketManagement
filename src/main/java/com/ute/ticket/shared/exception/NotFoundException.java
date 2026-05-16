@@ -1,4 +1,4 @@
-package com.urlshortener.common.exception;
+package com.ute.ticket.shared.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException() {
