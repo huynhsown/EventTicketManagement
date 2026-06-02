@@ -1,11 +1,11 @@
-CREATE TABLE inventory_transactions
+CREATE TABLE reservations
 (
-    id                  BIGSERIAL PRIMARY KEY,
+    id                  UUID PRIMARY KEY,
+    user_id             UUID NOT NULL REFERENCES users(id),
     ticket_type_id      BIGINT NOT NULL REFERENCES ticket_types(id),
-    type                VARCHAR(30) NOT NULL,
     quantity            INTEGER NOT NULL,
-    reference_id        UUID,
-    note                TEXT,
+    status              VARCHAR(30) NOT NULL,
+    expires_at          TIMESTAMP NOT NULL,
 
     created_at          TIMESTAMP NOT NULL,
     updated_at          TIMESTAMP NOT NULL,

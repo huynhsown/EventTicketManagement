@@ -1,11 +1,11 @@
-CREATE TABLE inventory_transactions
+CREATE TABLE order_items
 (
     id                  BIGSERIAL PRIMARY KEY,
+    order_id            UUID NOT NULL REFERENCES orders(id),
     ticket_type_id      BIGINT NOT NULL REFERENCES ticket_types(id),
-    type                VARCHAR(30) NOT NULL,
     quantity            INTEGER NOT NULL,
-    reference_id        UUID,
-    note                TEXT,
+    unit_price          NUMERIC(12,2) NOT NULL,
+    subtotal            NUMERIC(12,2) NOT NULL,
 
     created_at          TIMESTAMP NOT NULL,
     updated_at          TIMESTAMP NOT NULL,
