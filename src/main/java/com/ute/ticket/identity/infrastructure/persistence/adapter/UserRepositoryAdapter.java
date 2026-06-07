@@ -1,7 +1,7 @@
 package com.ute.ticket.identity.infrastructure.persistence.adapter;
 
 import com.ute.ticket.identity.domain.entity.User;
-import com.ute.ticket.identity.domain.repository.UserRepository;
+import com.ute.ticket.identity.application.port.out.UserRepository;
 import com.ute.ticket.identity.infrastructure.persistence.jpa.entity.UserJpaEntity;
 import com.ute.ticket.identity.infrastructure.persistence.jpa.mapper.UserMapper;
 import com.ute.ticket.identity.infrastructure.persistence.jpa.repository.UserJpaRepository;

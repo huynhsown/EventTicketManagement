@@ -1,4 +1,4 @@
-package com.ute.ticket.identity.domain.repository;
+package com.ute.ticket.identity.application.port.out;
 
 import com.ute.ticket.identity.domain.entity.User;
 

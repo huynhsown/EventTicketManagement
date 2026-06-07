@@ -5,7 +5,7 @@ import com.ute.ticket.identity.application.port.in.RegisterUserUseCase;
 import com.ute.ticket.identity.application.port.out.IdentityProvider;
 import com.ute.ticket.identity.application.result.UserResult;
 import com.ute.ticket.identity.domain.entity.User;
-import com.ute.ticket.identity.domain.repository.UserRepository;
+import com.ute.ticket.identity.application.port.out.UserRepository;
 import com.ute.ticket.shared.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
