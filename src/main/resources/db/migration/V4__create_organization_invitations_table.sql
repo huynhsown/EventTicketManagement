@@ -4,7 +4,7 @@ CREATE TABLE organization_invitations
     organization_id BIGINT              NOT NULL REFERENCES organizations (id),
     email           VARCHAR(255)        NOT NULL,
     role            VARCHAR(30)         NOT NULL,
-    invited_by      UUID                NOT NULL REFERENCES users (id),
+    invited_by      BIGINT              NOT NULL REFERENCES users (id),
     token           VARCHAR(255) UNIQUE NOT NULL,
     status          VARCHAR(30)         NOT NULL,
     expires_at      TIMESTAMP           NOT NULL,

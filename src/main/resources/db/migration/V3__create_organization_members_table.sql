@@ -1,6 +1,6 @@
 CREATE TABLE organization_members (
     organization_id BIGINT NOT NULL REFERENCES organizations(id),
-    user_id UUID NOT NULL REFERENCES users(id),
+    user_id BIGINT NOT NULL REFERENCES users(id),
 
     role VARCHAR(30) NOT NULL,
 

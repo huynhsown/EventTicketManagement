@@ -13,8 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @Builder
@@ -25,9 +23,12 @@ import java.util.UUID;
 public class UserJpaEntity extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private UUID id;
+    private Long id;
+
+    @Column(name = "username", length = 100, unique = true)
+    private String username;
 
     @Column(name = "auth_id", length = 100, unique = true)
     private String authId;

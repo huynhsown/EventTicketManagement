@@ -8,7 +8,7 @@ CREATE TABLE organizations
     website     VARCHAR(255),
     status      VARCHAR(30)         NOT NULL,
 
-    created_by  UUID                NOT NULL REFERENCES users (id),
+    created_by  BIGINT              NOT NULL REFERENCES users (id),
     updated_by  VARCHAR(255),
     created_at  TIMESTAMP           NOT NULL,
     updated_at  TIMESTAMP           NOT NULL,

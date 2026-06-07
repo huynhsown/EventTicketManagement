@@ -2,7 +2,7 @@ CREATE TABLE orders
 (
     id                  UUID PRIMARY KEY,
     reservation_id      UUID REFERENCES reservations(id),
-    user_id             UUID NOT NULL REFERENCES users(id),
+    user_id             BIGINT NOT NULL REFERENCES users(id),
     status              VARCHAR(30) NOT NULL,
     total_amount        NUMERIC(12,2) NOT NULL,
 

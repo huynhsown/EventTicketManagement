@@ -1,7 +1,7 @@
 CREATE TABLE reservations
 (
     id                  UUID PRIMARY KEY,
-    user_id             UUID NOT NULL REFERENCES users(id),
+    user_id             BIGINT NOT NULL REFERENCES users(id),
     ticket_type_id      BIGINT NOT NULL REFERENCES ticket_types(id),
     quantity            INTEGER NOT NULL,
     status              VARCHAR(30) NOT NULL,

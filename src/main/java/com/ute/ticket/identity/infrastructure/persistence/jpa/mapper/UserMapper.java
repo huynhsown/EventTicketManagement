@@ -10,6 +10,7 @@ public class UserMapper {
     public User toDomain(UserJpaEntity entity) {
         return User.builder()
                 .id(entity.getId())
+                .username(entity.getUsername())
                 .authId(entity.getAuthId())
                 .email(entity.getEmail())
                 .fullName(entity.getFullName())
@@ -21,6 +22,7 @@ public class UserMapper {
     public UserJpaEntity toJpaEntity(User domain) {
         return UserJpaEntity.builder()
                 .id(domain.getId())
+                .username(domain.getUsername())
                 .authId(domain.getAuthId())
                 .email(domain.getEmail())
                 .fullName(domain.getFullName())
@@ -30,6 +32,7 @@ public class UserMapper {
     }
 
     public void updateEntity(UserJpaEntity entity, User domain) {
+        entity.setUsername(domain.getUsername());
         entity.setAuthId(domain.getAuthId());
         entity.setEmail(domain.getEmail());
         entity.setFullName(domain.getFullName());

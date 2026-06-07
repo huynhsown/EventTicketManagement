@@ -4,10 +4,10 @@ import com.ute.ticket.identity.infrastructure.persistence.jpa.entity.UserJpaEnti
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
-import java.util.UUID;
 
-public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
+public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
     Optional<UserJpaEntity> findByEmail(String email);
     Optional<UserJpaEntity> findByAuthId(String authId);
+    boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 }

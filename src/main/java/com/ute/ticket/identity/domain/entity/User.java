@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.UUID;
-
 @Getter
 @Builder
 @AllArgsConstructor
 public class User {
 
-    private final UUID id;
+    private final Long id;
+    private String username;
     private String authId;
     private String email;
     private String fullName;
@@ -30,7 +29,7 @@ public class User {
         return authId != null && !authId.isBlank();
     }
 
-    public boolean isSameUser(UUID userId) {
+    public boolean isSameUser(Long userId) {
         return id.equals(userId);
     }
 }
