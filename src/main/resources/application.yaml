@@ -34,6 +34,8 @@ keycloak:
     password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
   app:
     realm: ${KEYCLOAK_APP_REALM:event-ticket}
+    clientId: ${KEYCLOAK_APP_CLIENT_ID:event-ticket-app}
+    clientSecret: ${KEYCLOAK_APP_CLIENT_SECRET:O1tucNY6Eta3eFPLzkA8TmlgAVrWlwWLOn0qlxDg4IkFBM5WQeZXQAtwzYL4OqmOWfW2mTGpiBPP75KFHBZeDY}
     roles:
       user: USER
       admin: ADMIN

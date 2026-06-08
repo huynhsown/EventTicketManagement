@@ -2,6 +2,7 @@ CREATE TABLE tickets
 (
     id                  UUID PRIMARY KEY,
     order_item_id       BIGINT NOT NULL REFERENCES order_items(id),
+    session_id          BIGINT NOT NULL REFERENCES sessions(id),
     ticket_code         VARCHAR(100) UNIQUE NOT NULL,
     qr_code             TEXT NOT NULL,
     attendee_name       VARCHAR(255),

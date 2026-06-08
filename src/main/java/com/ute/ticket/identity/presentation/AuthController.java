@@ -1,8 +1,12 @@
 package com.ute.ticket.identity.presentation;
 
+import com.ute.ticket.identity.application.port.in.LoginUserUseCase;
 import com.ute.ticket.identity.application.port.in.RegisterUserUseCase;
+import com.ute.ticket.identity.application.result.LoginResult;
 import com.ute.ticket.identity.application.result.UserResult;
+import com.ute.ticket.identity.presentation.dto.LoginRequest;
 import com.ute.ticket.identity.presentation.dto.RegisterRequest;
+import com.ute.ticket.identity.presentation.mapper.LoginMapper;
 import com.ute.ticket.identity.presentation.mapper.RegisterMapper;
 import com.ute.ticket.shared.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,15 +28,30 @@ public class AuthController {
 
     private final RegisterUserUseCase registerUserUseCase;
     private final RegisterMapper registerMapper;
+    private final LoginUserUseCase loginUserUseCase;
+    private final LoginMapper loginMapper;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Register a new user")
     public ApiResponse<UserResult> register(@Valid @RequestBody RegisterRequest request) {
         var command = registerMapper.toCommand(request);
         var result = registerUserUseCase.register(command);
         return ApiResponse.<UserResult>builder()
                 .success(true)
                 .message("User registered successfully")
+                .data(result)
+                .build();
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "Authenticate user and return tokens")
+    public ApiResponse<LoginResult> login(@Valid @RequestBody LoginRequest request) {
+        var command = loginMapper.toCommand(request);
+        var result = loginUserUseCase.login(command);
+        return ApiResponse.<LoginResult>builder()
+                .success(true)
+                .message("Login successful")
                 .data(result)
                 .build();
     }

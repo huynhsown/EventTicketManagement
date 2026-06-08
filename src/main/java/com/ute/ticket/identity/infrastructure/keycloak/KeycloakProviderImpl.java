@@ -1,8 +1,11 @@
 package com.ute.ticket.identity.infrastructure.keycloak;
 
 import com.ute.ticket.identity.application.command.CreateUserCommand;
+import com.ute.ticket.identity.application.port.out.AuthenticationProvider;
 import com.ute.ticket.identity.application.port.out.IdentityProvider;
+import com.ute.ticket.identity.application.result.LoginResult;
 import com.ute.ticket.shared.config.KeycloakProperties;
+import com.ute.ticket.shared.exception.UnauthorizedException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.OAuth2Constants;
@@ -19,7 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class KeycloakProviderImpl implements IdentityProvider {
+public class KeycloakProviderImpl implements IdentityProvider, AuthenticationProvider {
     @Value("${keycloak.app.roles.user}")
     private String userRole;
 
@@ -99,6 +102,30 @@ public class KeycloakProviderImpl implements IdentityProvider {
                 .password(properties.admin().password())
                 .grantType(OAuth2Constants.PASSWORD)
                 .build();
+    }
+
+    @Override
+    public LoginResult authenticate(String email, String password) {
+        try (Keycloak keycloak = KeycloakBuilder.builder()
+                .serverUrl(properties.serverUrl())
+                .realm(properties.app().realm())
+                .clientId(properties.app().clientId())
+                .clientSecret(properties.app().clientSecret())
+                .username(email)
+                .password(password)
+                .grantType(OAuth2Constants.PASSWORD)
+                .build()) {
+
+            var token = keycloak.tokenManager().getAccessToken();
+            return new LoginResult(
+                    token.getToken(),
+                    token.getRefreshToken(),
+                    (long) token.getExpiresIn(),
+                    token.getTokenType()
+            );
+        } catch (Exception e) {
+            throw new UnauthorizedException("Invalid username or password");
+        }
     }
 }
 

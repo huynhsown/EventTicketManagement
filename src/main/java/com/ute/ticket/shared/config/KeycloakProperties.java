@@ -17,6 +17,8 @@ public record KeycloakProperties(
     ) {}
 
     public record App(
-            String realm
+            String realm,
+            String clientId,
+            String clientSecret
     ) {}
 }

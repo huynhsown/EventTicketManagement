@@ -1,7 +1,7 @@
 CREATE TABLE payments
 (
     id                  UUID PRIMARY KEY,
-    order_id            UUID NOT NULL REFERENCES orders(id),
+    order_id            BIGINT NOT NULL REFERENCES orders(id),
     provider            VARCHAR(50),
     transaction_id      VARCHAR(255),
     amount              NUMERIC(12,2) NOT NULL,
