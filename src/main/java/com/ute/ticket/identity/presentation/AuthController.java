@@ -1,12 +1,18 @@
 package com.ute.ticket.identity.presentation;
 
 import com.ute.ticket.identity.application.port.in.LoginUserUseCase;
+import com.ute.ticket.identity.application.port.in.LogoutUseCase;
+import com.ute.ticket.identity.application.port.in.RefreshTokenUseCase;
 import com.ute.ticket.identity.application.port.in.RegisterUserUseCase;
 import com.ute.ticket.identity.application.result.LoginResult;
 import com.ute.ticket.identity.application.result.UserResult;
 import com.ute.ticket.identity.presentation.dto.LoginRequest;
+import com.ute.ticket.identity.presentation.dto.LogoutRequest;
+import com.ute.ticket.identity.presentation.dto.RefreshTokenRequest;
 import com.ute.ticket.identity.presentation.dto.RegisterRequest;
 import com.ute.ticket.identity.presentation.mapper.LoginMapper;
+import com.ute.ticket.identity.presentation.mapper.LogoutMapper;
+import com.ute.ticket.identity.presentation.mapper.RefreshTokenMapper;
 import com.ute.ticket.identity.presentation.mapper.RegisterMapper;
 import com.ute.ticket.shared.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +36,10 @@ public class AuthController {
     private final RegisterMapper registerMapper;
     private final LoginUserUseCase loginUserUseCase;
     private final LoginMapper loginMapper;
+    private final RefreshTokenUseCase refreshTokenUseCase;
+    private final RefreshTokenMapper refreshTokenMapper;
+    private final LogoutUseCase logoutUseCase;
+    private final LogoutMapper logoutMapper;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -53,6 +63,29 @@ public class AuthController {
                 .success(true)
                 .message("Login successful")
                 .data(result)
+                .build();
+    }
+
+    @PostMapping("/refresh-token")
+    @Operation(summary = "Refresh access token")
+    public ApiResponse<LoginResult> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        var command = refreshTokenMapper.toCommand(request);
+        var result = refreshTokenUseCase.refreshToken(command);
+        return ApiResponse.<LoginResult>builder()
+                .success(true)
+                .message("Token refreshed successfully")
+                .data(result)
+                .build();
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Logout and invalidate refresh token")
+    public ApiResponse<Void> logout(@Valid @RequestBody LogoutRequest request) {
+        var command = logoutMapper.toCommand(request);
+        logoutUseCase.logout(command);
+        return ApiResponse.<Void>builder()
+                .success(true)
+                .message("Logged out successfully")
                 .build();
     }
 }
