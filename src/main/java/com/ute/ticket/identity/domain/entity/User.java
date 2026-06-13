@@ -1,13 +1,14 @@
 package com.ute.ticket.identity.domain.entity;
 
+import com.ute.ticket.shared.domain.BaseDomain;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
-public class User {
+public class User extends BaseDomain {
 
     private final Long id;
     private String username;

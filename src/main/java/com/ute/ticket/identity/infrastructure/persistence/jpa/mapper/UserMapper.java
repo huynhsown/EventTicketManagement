@@ -16,6 +16,12 @@ public class UserMapper {
                 .fullName(entity.getFullName())
                 .phone(entity.getPhone())
                 .avatarUrl(entity.getAvatarUrl())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .createdBy(entity.getCreatedBy())
+                .updatedBy(entity.getUpdatedBy())
+                .deletedAt(entity.getDeletedAt())
+                .version(entity.getVersion())
                 .build();
     }
 
@@ -28,6 +34,12 @@ public class UserMapper {
                 .fullName(domain.getFullName())
                 .phone(domain.getPhone())
                 .avatarUrl(domain.getAvatarUrl())
+                .createdAt(domain.getCreatedAt())
+                .updatedAt(domain.getUpdatedAt())
+                .createdBy(domain.getCreatedBy())
+                .updatedBy(domain.getUpdatedBy())
+                .deletedAt(domain.getDeletedAt())
+                .version(domain.getVersion())
                 .build();
     }
 
@@ -38,5 +50,9 @@ public class UserMapper {
         entity.setFullName(domain.getFullName());
         entity.setPhone(domain.getPhone());
         entity.setAvatarUrl(domain.getAvatarUrl());
+        entity.setUpdatedAt(domain.getUpdatedAt());
+        entity.setUpdatedBy(domain.getUpdatedBy());
+        entity.setDeletedAt(domain.getDeletedAt());
+        entity.setVersion(domain.getVersion());
     }
 }
