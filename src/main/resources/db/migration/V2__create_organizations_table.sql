@@ -8,10 +8,10 @@ CREATE TABLE organizations
     website     VARCHAR(255),
     status      VARCHAR(30)         NOT NULL,
 
-    created_by  BIGINT              NOT NULL REFERENCES users (id),
-    updated_by  VARCHAR(255),
     created_at  TIMESTAMP           NOT NULL,
     updated_at  TIMESTAMP           NOT NULL,
+    created_by  VARCHAR(255),
+    updated_by  VARCHAR(255),
     deleted_at  TIMESTAMP,
 
     version     BIGINT              NOT NULL DEFAULT 0
