@@ -95,22 +95,20 @@ public class Organization extends BaseDomain {
     }
 
     public void suspend() {
-        if (status == OrganizationStatus.SUSPENDED) {
-            throw new DomainConflictException("Organization is already suspended.");
+        if (status != OrganizationStatus.ACTIVE) {
+            throw new DomainConflictException(
+                    "Only active organization can be suspended."
+            );
         }
-
-        if (status == OrganizationStatus.INACTIVE) {
-            throw new DomainConflictException("Inactive organization cannot be suspended.");
-        }
-
         status = OrganizationStatus.SUSPENDED;
     }
 
     public void deactivate() {
-        if (status == OrganizationStatus.INACTIVE) {
-            throw new DomainConflictException("Organization is already inactive.");
+        if (status != OrganizationStatus.ACTIVE) {
+            throw new DomainConflictException(
+                    "Only active organization can be deactivated."
+            );
         }
-
         status = OrganizationStatus.INACTIVE;
     }
 
