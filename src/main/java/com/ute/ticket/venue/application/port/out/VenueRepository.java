@@ -21,6 +21,4 @@ public interface VenueRepository {
             String sortBy,
             boolean ascending
     );
-
-    void deleteById(Long id);
 }

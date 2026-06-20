@@ -69,12 +69,4 @@ public class VenueRepositoryAdapter implements VenueRepository {
                 .hasPreviousPage(venues.hasPrevious())
                 .build();
     }
-
-    @Override
-    public void deleteById(Long id) {
-        VenueJpaEntity jpaEntity = venueJpaRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new NotFoundException("Venue not found"));
-        jpaEntity.markDeleted();
-        venueJpaRepository.save(jpaEntity);
-    }
 }
