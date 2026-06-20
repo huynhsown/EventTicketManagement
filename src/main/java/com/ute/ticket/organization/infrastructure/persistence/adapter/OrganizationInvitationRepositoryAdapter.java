@@ -23,16 +23,16 @@ public class OrganizationInvitationRepositoryAdapter implements OrganizationInvi
 
     @Override
     public OrganizationInvitation save(OrganizationInvitation invitation) {
-        OrganizationInvitationJpaEntity entity;
-        if (invitation.getId() == null) {
-            entity = organizationInvitationMapper.toJpaEntity(invitation);
+        OrganizationInvitationJpaEntity jpaEntity;
+        if (invitation.getVersion() == null) {
+            jpaEntity = organizationInvitationMapper.toJpaEntity(invitation);
         } else {
-            entity = organizationInvitationJpaRepository.findById(invitation.getId())
-                    .orElseThrow(() -> new IllegalStateException("Invitation not found"));
-            organizationInvitationMapper.updateEntity(entity, invitation);
+            jpaEntity = organizationInvitationJpaRepository.findById(invitation.getId())
+                    .orElseThrow(() -> new NotFoundException("Organization invitation not found"));
+            organizationInvitationMapper.updateEntity(jpaEntity, invitation);
         }
-        entity = organizationInvitationJpaRepository.save(entity);
-        return organizationInvitationMapper.toDomain(entity);
+        OrganizationInvitationJpaEntity saved = organizationInvitationJpaRepository.save(jpaEntity);
+        return organizationInvitationMapper.toDomain(saved);
     }
 
     @Override

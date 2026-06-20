@@ -23,15 +23,15 @@ public class OrganizationMemberRepositoryAdapter implements OrganizationMemberRe
 
     @Override
     public OrganizationMember save(OrganizationMember member) {
-                OrganizationMemberId id = new OrganizationMemberId(member.getOrganizationId(), member.getUserId());
-        OrganizationMemberJpaEntity jpaEntity =
-                organizationMemberJpaRepository.findById(id)
-                        .map(existing -> {
-                            organizationMemberMapper.updateEntity(existing, member);
-                            return existing;
-                        })
-                        .orElseGet(() ->
-                                organizationMemberMapper.toJpaEntity(member));
+        OrganizationMemberId id = new OrganizationMemberId(member.getOrganizationId(), member.getUserId());
+        OrganizationMemberJpaEntity jpaEntity;
+        if (!organizationMemberJpaRepository.existsById(id)) {
+            jpaEntity = organizationMemberMapper.toJpaEntity(member);
+        } else {
+            jpaEntity = organizationMemberJpaRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Organization member not found"));
+            organizationMemberMapper.updateEntity(jpaEntity, member);
+        }
         OrganizationMemberJpaEntity saved = organizationMemberJpaRepository.save(jpaEntity);
         return organizationMemberMapper.toDomain(saved);
     }
