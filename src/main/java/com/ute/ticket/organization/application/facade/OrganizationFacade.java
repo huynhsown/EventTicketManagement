@@ -5,6 +5,7 @@ import com.ute.ticket.organization.application.command.ActivateOrganizationComma
 import com.ute.ticket.organization.application.command.AddOrganizationMemberCommand;
 import com.ute.ticket.organization.application.command.CreateOrganizationCommand;
 import com.ute.ticket.organization.application.command.DeactivateOrganizationCommand;
+import com.ute.ticket.organization.application.command.RejectInvitationCommand;
 import com.ute.ticket.organization.application.command.SuspendOrganizationCommand;
 import com.ute.ticket.organization.application.port.in.AcceptInvitationUseCase;
 import com.ute.ticket.organization.application.port.in.ActivateOrganizationUseCase;
@@ -12,6 +13,7 @@ import com.ute.ticket.organization.application.port.in.InviteOrganizationMemberU
 import com.ute.ticket.organization.application.port.in.CreateOrganizationUseCase;
 import com.ute.ticket.organization.application.port.in.DeactivateOrganizationUseCase;
 import com.ute.ticket.organization.application.port.in.GetOrganizationUseCase;
+import com.ute.ticket.organization.application.port.in.RejectInvitationUseCase;
 import com.ute.ticket.organization.application.port.in.SuspendOrganizationUseCase;
 import com.ute.ticket.organization.application.result.OrganizationMemberResult;
 import com.ute.ticket.organization.application.result.OrganizationResult;
@@ -29,6 +31,7 @@ public class OrganizationFacade {
     private final DeactivateOrganizationUseCase deactivateOrganizationUseCase;
     private final InviteOrganizationMemberUseCase addOrganizationMemberUseCase;
     private final AcceptInvitationUseCase acceptInvitationUseCase;
+    private final RejectInvitationUseCase rejectInvitationUseCase;
 
     public OrganizationResult createOrganization(CreateOrganizationCommand cmd) {
         return createOrganizationUseCase.execute(cmd);
@@ -70,5 +73,13 @@ public class OrganizationFacade {
                 .userId(userId)
                 .build();
         return acceptInvitationUseCase.execute(command);
+    }
+
+    public OrganizationMemberResult rejectInvitation(String token, Long userId) {
+        var command = RejectInvitationCommand.builder()
+                .token(token)
+                .userId(userId)
+                .build();
+        return rejectInvitationUseCase.execute(command);
     }
 }
