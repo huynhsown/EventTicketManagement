@@ -22,7 +22,7 @@ public class OrganizationRepositoryAdapter implements OrganizationRepository {
     @Override
     public Organization save(Organization organization) {
         OrganizationJpaEntity jpaEntity;
-        if (organization.getId() == null) {
+        if (organization.getId() == null || organization.getVersion() == null) {
             jpaEntity = organizationMapper.toJpaEntity(organization);
         } else {
             jpaEntity = organizationJpaRepository.findById(organization.getId())
@@ -56,6 +56,11 @@ public class OrganizationRepositoryAdapter implements OrganizationRepository {
     @Override
     public boolean existsBySlug(String slug) {
         return organizationJpaRepository.existsBySlug(slug);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return organizationJpaRepository.existsById(id);
     }
 
     @Override

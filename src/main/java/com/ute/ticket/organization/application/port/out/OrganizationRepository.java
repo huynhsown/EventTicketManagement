@@ -11,5 +11,6 @@ public interface OrganizationRepository {
     Optional<Organization> findBySlug(String slug);
     List<Organization> findByOwnerId(Long ownerId);
     boolean existsBySlug(String slug);
+    boolean existsById(Long id);
     void deleteById(Long id);
 }

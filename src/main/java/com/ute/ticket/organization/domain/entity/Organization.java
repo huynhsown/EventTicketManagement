@@ -112,4 +112,8 @@ public class Organization extends BaseDomain {
         status = OrganizationStatus.INACTIVE;
     }
 
+    public boolean isActive() {
+        return this.status == OrganizationStatus.ACTIVE;
+    }
+
 }

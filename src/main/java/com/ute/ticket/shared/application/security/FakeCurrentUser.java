@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 public class FakeCurrentUser implements CurrentUser {
     @Override
     public Long getUserId() {
-        return 1L;
+        return 2L;
     }
 }

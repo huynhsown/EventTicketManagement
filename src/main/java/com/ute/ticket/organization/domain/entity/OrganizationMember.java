@@ -5,6 +5,7 @@ import com.ute.ticket.organization.domain.enums.MemberStatus;
 import com.ute.ticket.shared.domain.BaseDomain;
 import com.ute.ticket.shared.exception.DomainConflictException;
 import com.ute.ticket.shared.exception.DomainValidationException;
+import com.ute.ticket.shared.exception.ForbiddenException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -118,5 +119,11 @@ public class OrganizationMember extends BaseDomain {
 
     public boolean isAdmin() {
         return role == MemberRole.OWNER || role == MemberRole.ADMIN;
+    }
+
+    public void ensureCanManageMembers() {
+        if (!isAdmin()) {
+            throw new ForbiddenException("Only organization admins or owner can manage members");
+        }
     }
 }

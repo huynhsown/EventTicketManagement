@@ -1,8 +1,11 @@
 package com.ute.ticket.organization.presentation;
 
 import com.ute.ticket.organization.application.facade.OrganizationFacade;
+import com.ute.ticket.organization.application.result.OrganizationMemberResult;
 import com.ute.ticket.organization.application.result.OrganizationResult;
+import com.ute.ticket.organization.presentation.dto.AddOrganizationMemberRequest;
 import com.ute.ticket.organization.presentation.dto.CreateOrganizationRequest;
+import com.ute.ticket.organization.presentation.mapper.AddOrganizationMemberMapper;
 import com.ute.ticket.organization.presentation.mapper.CreateOrganizationMapper;
 import com.ute.ticket.shared.application.security.CurrentUser;
 import com.ute.ticket.shared.dto.ApiResponse;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +33,7 @@ public class OrganizationController {
     private final OrganizationFacade organizationFacade;
 
     private final CreateOrganizationMapper createOrganizationMapper;
+    private final AddOrganizationMemberMapper addOrganizationMemberMapper;
     private final CurrentUser currentUser;
 
     @PostMapping
@@ -84,6 +89,33 @@ public class OrganizationController {
         return ApiResponse.<OrganizationResult>builder()
                 .success(true)
                 .message("Organization deactivated successfully")
+                .data(result)
+                .build();
+    }
+
+    @PostMapping("/invitations/accept")
+    @Operation(summary = "Accept an organization invitation (invitee)")
+    public ApiResponse<OrganizationMemberResult> acceptInvitation(@RequestParam String token) {
+        var result = organizationFacade.acceptInvitation(token, currentUser.getUserId());
+        return ApiResponse.<OrganizationMemberResult>builder()
+                .success(true)
+                .message("Invitation accepted successfully")
+                .data(result)
+                .build();
+    }
+
+    @PostMapping("/{id}/members")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Add a member to an organization (admin/owner)")
+    public ApiResponse<OrganizationMemberResult> addMember(
+            @PathVariable Long id,
+            @Valid @RequestBody AddOrganizationMemberRequest request
+    ) {
+        var command = addOrganizationMemberMapper.toCommand(id, request, currentUser.getUserId());
+        var result = organizationFacade.addOrganizationMember(command);
+        return ApiResponse.<OrganizationMemberResult>builder()
+                .success(true)
+                .message("Organization member added successfully")
                 .data(result)
                 .build();
     }
