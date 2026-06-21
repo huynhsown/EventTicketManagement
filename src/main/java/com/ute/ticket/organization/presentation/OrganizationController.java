@@ -104,6 +104,17 @@ public class OrganizationController {
                 .build();
     }
 
+    @PostMapping("/invitations/reject")
+    @Operation(summary = "Reject an organization invitation (invitee)")
+    public ApiResponse<OrganizationMemberResult> rejectInvitation(@RequestParam String token) {
+        var result = organizationFacade.rejectInvitation(token, currentUser.getUserId());
+        return ApiResponse.<OrganizationMemberResult>builder()
+                .success(true)
+                .message("Invitation rejected successfully")
+                .data(result)
+                .build();
+    }
+
     @PostMapping("/{id}/members")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Add a member to an organization (admin/owner)")
