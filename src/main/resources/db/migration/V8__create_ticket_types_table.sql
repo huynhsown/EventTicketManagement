@@ -6,6 +6,7 @@ CREATE TABLE ticket_types
     description     TEXT,
     price           DECIMAL(12,2) NOT NULL,
     max_per_user    INTEGER NOT NULL,
+    status          VARCHAR(30) NOT NULL,
 
     created_at      TIMESTAMP NOT NULL,
     updated_at      TIMESTAMP NOT NULL,

@@ -4,6 +4,7 @@ CREATE TABLE inventories
     total_stock         INTEGER NOT NULL,
     reserved_stock      INTEGER NOT NULL DEFAULT 0,
     sold_stock          INTEGER NOT NULL DEFAULT 0,
+    status              VARCHAR(30) NOT NULL,
 
     created_at          TIMESTAMP NOT NULL,
     updated_at          TIMESTAMP NOT NULL,

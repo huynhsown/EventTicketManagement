@@ -6,7 +6,6 @@ CREATE TABLE events
     title            VARCHAR(255) NOT NULL,
     description      TEXT,
     banner_url       TEXT,
-    category         VARCHAR(100),
     status           VARCHAR(30) NOT NULL,
     published_at     TIMESTAMP,
 
