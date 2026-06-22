@@ -9,6 +9,8 @@ import com.ute.ticket.shared.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class CategoryRepositoryAdapter implements CategoryRepository {
@@ -28,6 +30,12 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
         }
         CategoryJpaEntity saved = categoryJpaRepository.save(jpaEntity);
         return categoryMapper.toDomain(saved);
+    }
+
+    @Override
+    public Optional<Category> findById(Long id) {
+        return categoryJpaRepository.findById(id)
+                .map(categoryMapper::toDomain);
     }
 
     @Override
