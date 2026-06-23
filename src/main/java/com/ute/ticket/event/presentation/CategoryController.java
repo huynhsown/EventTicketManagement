@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,6 +55,39 @@ public class CategoryController {
         return ApiResponse.<CategoryResult>builder()
                 .success(true)
                 .message("Category renamed successfully")
+                .data(result)
+                .build();
+    }
+
+    @PatchMapping("/{id}/archive")
+    @Operation(summary = "Archive a category (system admin)")
+    public ApiResponse<CategoryResult> archive(@PathVariable Long id) {
+        var result = categoryFacade.archiveCategory(id);
+        return ApiResponse.<CategoryResult>builder()
+                .success(true)
+                .message("Category archived successfully")
+                .data(result)
+                .build();
+    }
+
+    @PatchMapping("/{id}/restore")
+    @Operation(summary = "Restore an archived category (system admin)")
+    public ApiResponse<CategoryResult> restore(@PathVariable Long id) {
+        var result = categoryFacade.restoreCategory(id);
+        return ApiResponse.<CategoryResult>builder()
+                .success(true)
+                .message("Category restored successfully")
+                .data(result)
+                .build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a category with no event assignments (system admin)")
+    public ApiResponse<CategoryResult> delete(@PathVariable Long id) {
+        var result = categoryFacade.deleteCategory(id);
+        return ApiResponse.<CategoryResult>builder()
+                .success(true)
+                .message("Category deleted successfully")
                 .data(result)
                 .build();
     }

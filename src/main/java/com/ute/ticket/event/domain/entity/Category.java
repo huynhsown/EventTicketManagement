@@ -64,10 +64,6 @@ public class Category extends BaseDomain {
             throw new DomainConflictException("Category is already archived.");
         }
 
-        if (status == CategoryStatus.DELETED) {
-            throw new DomainConflictException("Deleted category cannot be archived.");
-        }
-
         status = CategoryStatus.ARCHIVED;
     }
 
@@ -88,7 +84,7 @@ public class Category extends BaseDomain {
             throw new DomainConflictException("Archived category cannot be modified.");
         }
 
-        if (status == CategoryStatus.DELETED) {
+        if (isDeleted()) {
             throw new DomainConflictException("Deleted category cannot be modified.");
         }
     }

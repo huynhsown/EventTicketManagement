@@ -10,6 +10,7 @@ public interface EventCategoryJpaRepository
 
     List<EventCategoryJpaEntity> findByEventId(Long eventId);
     List<EventCategoryJpaEntity> findByCategoryId(Long categoryId);
+    boolean existsByCategoryId(Long categoryId);
     boolean existsByEventIdAndCategoryId(Long eventId, Long categoryId);
     void deleteByEventIdAndCategoryId(Long eventId, Long categoryId);
     long countByEventId(Long eventId);
