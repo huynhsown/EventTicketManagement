@@ -1,0 +1,2 @@
+ALTER TABLE events
+    ALTER COLUMN venue_id DROP NOT NULL;

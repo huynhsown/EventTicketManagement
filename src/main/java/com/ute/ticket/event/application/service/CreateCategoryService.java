@@ -5,10 +5,8 @@ import com.ute.ticket.event.application.port.in.CreateCategoryUseCase;
 import com.ute.ticket.event.application.port.out.CategoryRepository;
 import com.ute.ticket.event.application.result.CategoryResult;
 import com.ute.ticket.event.domain.entity.Category;
-import com.ute.ticket.event.domain.event.CategoryCreated;
 import com.ute.ticket.shared.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

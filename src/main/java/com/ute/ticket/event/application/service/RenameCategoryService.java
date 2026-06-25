@@ -5,11 +5,9 @@ import com.ute.ticket.event.application.port.in.RenameCategoryUseCase;
 import com.ute.ticket.event.application.port.out.CategoryRepository;
 import com.ute.ticket.event.application.result.CategoryResult;
 import com.ute.ticket.event.domain.entity.Category;
-import com.ute.ticket.event.domain.event.CategoryRenamed;
 import com.ute.ticket.shared.exception.BadRequestException;
 import com.ute.ticket.shared.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

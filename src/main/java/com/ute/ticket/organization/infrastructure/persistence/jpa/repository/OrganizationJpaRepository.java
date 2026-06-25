@@ -1,5 +1,6 @@
 package com.ute.ticket.organization.infrastructure.persistence.jpa.repository;
 
+import com.ute.ticket.organization.domain.enums.OrganizationStatus;
 import com.ute.ticket.organization.infrastructure.persistence.jpa.entity.OrganizationJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,5 @@ public interface OrganizationJpaRepository extends JpaRepository<OrganizationJpa
     Optional<OrganizationJpaEntity> findBySlug(String slug);
     List<OrganizationJpaEntity> findByOwnerId(Long ownerId);
     boolean existsBySlug(String slug);
+    boolean existsByIdAndStatus(Long id, OrganizationStatus status);
 }
