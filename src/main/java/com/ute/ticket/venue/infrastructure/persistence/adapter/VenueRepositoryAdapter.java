@@ -44,6 +44,11 @@ public class VenueRepositoryAdapter implements VenueRepository {
     }
 
     @Override
+    public boolean existsActiveById(Long id) {
+        return venueJpaRepository.existsByIdAndDeletedAtIsNullAndStatus(id, VenueStatus.ACTIVE);
+    }
+
+    @Override
     public PageInfo<Venue> search(
             String keyword,
             String city,

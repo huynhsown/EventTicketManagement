@@ -2,6 +2,7 @@ package com.ute.ticket.organization.infrastructure.persistence.adapter;
 
 import com.ute.ticket.organization.application.port.out.OrganizationMemberRepository;
 import com.ute.ticket.organization.domain.entity.OrganizationMember;
+import com.ute.ticket.organization.domain.enums.MemberRole;
 import com.ute.ticket.organization.domain.enums.MemberStatus;
 import com.ute.ticket.organization.infrastructure.persistence.jpa.entity.OrganizationMemberJpaEntity;
 import com.ute.ticket.organization.infrastructure.persistence.jpa.entity.OrganizationMemberJpaEntity.OrganizationMemberId;
@@ -71,6 +72,15 @@ public class OrganizationMemberRepositoryAdapter implements OrganizationMemberRe
     public boolean existsById(Long organizationId, Long userId) {
         OrganizationMemberId id = new OrganizationMemberId(organizationId, userId);
         return organizationMemberJpaRepository.existsById(id);
+    }
+
+    @Override
+    public boolean existsAdminById(Long organizationId, Long userId) {
+        return organizationMemberJpaRepository.existsByOrganizationIdAndUserIdAndRoleIn(
+                organizationId,
+                userId,
+                List.of(MemberRole.OWNER, MemberRole.ADMIN)
+        );
     }
 
     @Override

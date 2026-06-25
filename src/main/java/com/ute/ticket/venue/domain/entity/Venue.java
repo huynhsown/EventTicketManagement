@@ -1,5 +1,6 @@
 package com.ute.ticket.venue.domain.entity;
 
+import com.ute.ticket.organization.domain.enums.OrganizationStatus;
 import com.ute.ticket.shared.domain.BaseDomain;
 import com.ute.ticket.shared.exception.DomainValidationException;
 import com.ute.ticket.venue.domain.enums.VenueStatus;
@@ -174,5 +175,9 @@ public class Venue extends BaseDomain {
         }
 
         return status;
+    }
+
+    public boolean isActive() {
+        return this.status == VenueStatus.ACTIVE;
     }
 }

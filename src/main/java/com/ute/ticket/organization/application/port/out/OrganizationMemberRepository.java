@@ -13,5 +13,6 @@ public interface OrganizationMemberRepository {
     List<OrganizationMember> findByOrganizationIdAndStatus(Long organizationId, MemberStatus status);
     List<OrganizationMember> findByUserId(Long userId);
     boolean existsById(Long organizationId, Long userId);
+    boolean existsAdminById(Long organizationId, Long userId);
     void deleteById(Long organizationId, Long userId);
 }

@@ -2,6 +2,7 @@ package com.ute.ticket.organization.infrastructure.persistence.adapter;
 
 import com.ute.ticket.organization.application.port.out.OrganizationRepository;
 import com.ute.ticket.organization.domain.entity.Organization;
+import com.ute.ticket.organization.domain.enums.OrganizationStatus;
 import com.ute.ticket.organization.infrastructure.persistence.jpa.entity.OrganizationJpaEntity;
 import com.ute.ticket.organization.infrastructure.persistence.jpa.mapper.OrganizationMapper;
 import com.ute.ticket.organization.infrastructure.persistence.jpa.repository.OrganizationJpaRepository;
@@ -61,6 +62,11 @@ public class OrganizationRepositoryAdapter implements OrganizationRepository {
     @Override
     public boolean existsById(Long id) {
         return organizationJpaRepository.existsById(id);
+    }
+
+    @Override
+    public boolean existsActiveById(Long id) {
+        return organizationJpaRepository.existsByIdAndStatus(id, OrganizationStatus.ACTIVE);
     }
 
     @Override
