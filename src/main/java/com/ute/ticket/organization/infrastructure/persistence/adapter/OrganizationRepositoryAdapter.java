@@ -60,6 +60,11 @@ public class OrganizationRepositoryAdapter implements OrganizationRepository {
     }
 
     @Override
+    public boolean existsBySlugAndIdNot(String slug, Long id) {
+        return organizationJpaRepository.existsBySlugAndIdNot(slug, id);
+    }
+
+    @Override
     public boolean existsById(Long id) {
         return organizationJpaRepository.existsById(id);
     }

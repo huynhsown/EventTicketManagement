@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface OrganizationMemberRepository {
     OrganizationMember save(OrganizationMember member);
     Optional<OrganizationMember> findById(Long organizationId, Long userId);
+    Optional<OrganizationMember> findByOrganizationIdAndUserId(Long organizationId, Long userId);
     List<OrganizationMember> findByOrganizationId(Long organizationId);
     List<OrganizationMember> findByOrganizationIdAndStatus(Long organizationId, MemberStatus status);
     List<OrganizationMember> findByUserId(Long userId);

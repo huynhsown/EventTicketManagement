@@ -2,6 +2,7 @@ package com.ute.ticket.organization.domain.entity;
 
 import com.ute.ticket.organization.domain.enums.MemberRole;
 import com.ute.ticket.organization.domain.enums.MemberStatus;
+import com.ute.ticket.organization.domain.enums.OrganizationStatus;
 import com.ute.ticket.shared.domain.BaseDomain;
 import com.ute.ticket.shared.exception.DomainConflictException;
 import com.ute.ticket.shared.exception.DomainValidationException;
@@ -49,6 +50,19 @@ public class OrganizationMember extends BaseDomain {
                 .build();
     }
 
+    public void pending() {
+        if (status == MemberStatus.PENDING) {
+            throw new DomainConflictException("Member is already pending.");
+        }
+
+        if (status != MemberStatus.REMOVED) {
+            throw new DomainConflictException("Member cannot be pending.");
+        }
+
+        status = MemberStatus.PENDING;
+        this.markRestored();
+    }
+
     public void activate() {
         if (status == MemberStatus.ACTIVE) {
             throw new DomainConflictException("Member is already active.");
@@ -85,6 +99,34 @@ public class OrganizationMember extends BaseDomain {
         status = MemberStatus.REMOVED;
     }
 
+    public boolean isActive() {
+        return this.status == MemberStatus.ACTIVE;
+    }
+
+    public boolean isRemoved() {
+        return this.status == MemberStatus.REMOVED || this.isDeleted();
+    }
+
+    public void promoteToOwner() {
+        if (status != MemberStatus.ACTIVE) {
+            throw new DomainConflictException("Only an active member can become the owner.");
+        }
+
+        if (isOwner()) {
+            throw new DomainConflictException("Member is already the owner.");
+        }
+
+        role = MemberRole.OWNER;
+    }
+
+    public void demoteFromOwner() {
+        if (!isOwner()) {
+            throw new DomainConflictException("Only the current owner can be demoted.");
+        }
+
+        role = MemberRole.ADMIN;
+    }
+
     public void changeRole(MemberRole newRole) {
         if (newRole == null) {
             throw new DomainValidationException("Member role cannot be null.");
@@ -106,11 +148,12 @@ public class OrganizationMember extends BaseDomain {
             throw new DomainConflictException("Owner cannot leave. Transfer ownership first.");
         }
 
-        if (status == MemberStatus.REMOVED) {
+        if (status == MemberStatus.REMOVED || isDeleted()) {
             throw new DomainConflictException("Member has already left.");
         }
 
         status = MemberStatus.REMOVED;
+        this.markDeleted();
     }
 
     public boolean isOwner() {

@@ -1,12 +1,12 @@
 package com.ute.ticket.organization.presentation;
 
 import com.ute.ticket.organization.application.facade.OrganizationFacade;
-import com.ute.ticket.organization.application.result.OrganizationMemberResult;
 import com.ute.ticket.organization.application.result.OrganizationResult;
-import com.ute.ticket.organization.presentation.dto.AddOrganizationMemberRequest;
+import com.ute.ticket.organization.presentation.dto.ChangeOrganizationSlugRequest;
 import com.ute.ticket.organization.presentation.dto.CreateOrganizationRequest;
-import com.ute.ticket.organization.presentation.mapper.AddOrganizationMemberMapper;
-import com.ute.ticket.organization.presentation.mapper.CreateOrganizationMapper;
+import com.ute.ticket.organization.presentation.dto.TransferOwnershipRequest;
+import com.ute.ticket.organization.presentation.dto.UpdateOrganizationProfileRequest;
+import com.ute.ticket.organization.presentation.mapper.OrganizationMapper;
 import com.ute.ticket.shared.application.security.CurrentUser;
 import com.ute.ticket.shared.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,16 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrganizationController {
 
     private final OrganizationFacade organizationFacade;
-
-    private final CreateOrganizationMapper createOrganizationMapper;
-    private final AddOrganizationMemberMapper addOrganizationMemberMapper;
+    private final OrganizationMapper organizationMapper;
     private final CurrentUser currentUser;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new organization")
     public ApiResponse<OrganizationResult> create(@Valid @RequestBody CreateOrganizationRequest request) {
-        var command = createOrganizationMapper.toCommand(request, currentUser.getUserId());
+        var command = organizationMapper.toCommand(request, currentUser.getUserId());
         var result = organizationFacade.createOrganization(command);
         return ApiResponse.<OrganizationResult>builder()
                 .success(true)
@@ -56,6 +53,51 @@ public class OrganizationController {
         return ApiResponse.<OrganizationResult>builder()
                 .success(true)
                 .message("Organization retrieved successfully")
+                .data(result)
+                .build();
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Update organization profile (owner/admin)")
+    public ApiResponse<OrganizationResult> updateProfile(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateOrganizationProfileRequest request
+    ) {
+        var command = organizationMapper.toCommand(id, request, currentUser.getUserId());
+        var result = organizationFacade.updateOrganizationProfile(command);
+        return ApiResponse.<OrganizationResult>builder()
+                .success(true)
+                .message("Organization profile updated successfully")
+                .data(result)
+                .build();
+    }
+
+    @PatchMapping("/{id}/owner")
+    @Operation(summary = "Transfer organization ownership (owner)")
+    public ApiResponse<OrganizationResult> transferOwnership(
+            @PathVariable Long id,
+            @Valid @RequestBody TransferOwnershipRequest request
+    ) {
+        var command = organizationMapper.toCommand(id, request, currentUser.getUserId());
+        var result = organizationFacade.transferOwnership(command);
+        return ApiResponse.<OrganizationResult>builder()
+                .success(true)
+                .message("Organization ownership transferred successfully")
+                .data(result)
+                .build();
+    }
+
+    @PatchMapping("/{id}/slug")
+    @Operation(summary = "Change organization slug (owner/admin)")
+    public ApiResponse<OrganizationResult> changeSlug(
+            @PathVariable Long id,
+            @Valid @RequestBody ChangeOrganizationSlugRequest request
+    ) {
+        var command = organizationMapper.toCommand(id, request, currentUser.getUserId());
+        var result = organizationFacade.changeOrganizationSlug(command);
+        return ApiResponse.<OrganizationResult>builder()
+                .success(true)
+                .message("Organization slug changed successfully")
                 .data(result)
                 .build();
     }
@@ -89,44 +131,6 @@ public class OrganizationController {
         return ApiResponse.<OrganizationResult>builder()
                 .success(true)
                 .message("Organization deactivated successfully")
-                .data(result)
-                .build();
-    }
-
-    @PostMapping("/invitations/accept")
-    @Operation(summary = "Accept an organization invitation (invitee)")
-    public ApiResponse<OrganizationMemberResult> acceptInvitation(@RequestParam String token) {
-        var result = organizationFacade.acceptInvitation(token, currentUser.getUserId());
-        return ApiResponse.<OrganizationMemberResult>builder()
-                .success(true)
-                .message("Invitation accepted successfully")
-                .data(result)
-                .build();
-    }
-
-    @PostMapping("/invitations/reject")
-    @Operation(summary = "Reject an organization invitation (invitee)")
-    public ApiResponse<OrganizationMemberResult> rejectInvitation(@RequestParam String token) {
-        var result = organizationFacade.rejectInvitation(token, currentUser.getUserId());
-        return ApiResponse.<OrganizationMemberResult>builder()
-                .success(true)
-                .message("Invitation rejected successfully")
-                .data(result)
-                .build();
-    }
-
-    @PostMapping("/{id}/members")
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Add a member to an organization (admin/owner)")
-    public ApiResponse<OrganizationMemberResult> addMember(
-            @PathVariable Long id,
-            @Valid @RequestBody AddOrganizationMemberRequest request
-    ) {
-        var command = addOrganizationMemberMapper.toCommand(id, request, currentUser.getUserId());
-        var result = organizationFacade.addOrganizationMember(command);
-        return ApiResponse.<OrganizationMemberResult>builder()
-                .success(true)
-                .message("Organization member added successfully")
                 .data(result)
                 .build();
     }

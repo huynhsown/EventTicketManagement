@@ -24,6 +24,10 @@ public abstract class BaseDomain {
         this.deletedAt = Instant.now();
     }
 
+    public void markRestored() {
+        this.deletedAt = null;
+    }
+
     protected void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }

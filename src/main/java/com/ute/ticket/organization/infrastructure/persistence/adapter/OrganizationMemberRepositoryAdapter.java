@@ -45,6 +45,12 @@ public class OrganizationMemberRepositoryAdapter implements OrganizationMemberRe
     }
 
     @Override
+    public Optional<OrganizationMember> findByOrganizationIdAndUserId(Long organizationId, Long userId) {
+        return organizationMemberJpaRepository.findByOrganizationIdAndUserId(organizationId, userId)
+                .map(organizationMemberMapper::toDomain);
+    }
+
+    @Override
     public List<OrganizationMember> findByOrganizationId(Long organizationId) {
         return organizationMemberJpaRepository.findByOrganizationId(organizationId)
                 .stream()

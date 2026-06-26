@@ -12,7 +12,7 @@ import com.ute.ticket.organization.application.result.OrganizationMemberResult;
 import com.ute.ticket.organization.domain.entity.Organization;
 import com.ute.ticket.organization.domain.entity.OrganizationInvitation;
 import com.ute.ticket.organization.domain.entity.OrganizationMember;
-import com.ute.ticket.shared.exception.BadRequestException;
+import com.ute.ticket.organization.domain.enums.MemberRole;
 import com.ute.ticket.shared.exception.ConflictException;
 import com.ute.ticket.shared.exception.ForbiddenException;
 import com.ute.ticket.shared.exception.NotFoundException;
@@ -29,6 +29,8 @@ import java.time.temporal.ChronoUnit;
 @Transactional
 public class InviteOrganizationMemberService implements InviteOrganizationMemberUseCase {
 
+    private static final long INVITATION_EXPIRE_DAYS = 3;
+
     private final OrganizationRepository organizationRepository;
     private final OrganizationMemberRepository organizationMemberRepository;
     private final OrganizationInvitationRepository invitationRepository;
@@ -36,6 +38,10 @@ public class InviteOrganizationMemberService implements InviteOrganizationMember
 
     @Override
     public OrganizationMemberResult execute(AddOrganizationMemberCommand cmd) {
+
+        if (cmd.getRole() == MemberRole.OWNER) {
+            throw new ForbiddenException("User cannot add OWNER role to new member");
+        }
 
         User user = userRepository.findById(cmd.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
@@ -47,36 +53,57 @@ public class InviteOrganizationMemberService implements InviteOrganizationMember
             throw new ConflictException("Organization isn't active");
         }
 
-        OrganizationMember actor = organizationMemberRepository.findById(cmd.getOrganizationId(), cmd.getAddedBy())
-                .orElseThrow(() -> new ForbiddenException("Only organization admins or owner can add members"));
+        OrganizationMember actor = organizationMemberRepository
+                .findById(cmd.getOrganizationId(), cmd.getAddedBy())
+                .orElseThrow(() -> new ForbiddenException(
+                        "Only organization admins or owners can add members"));
 
         actor.ensureCanManageMembers();
 
-        if (organizationMemberRepository.existsById(cmd.getOrganizationId(), cmd.getUserId())) {
-            throw new ConflictException("User is already a member of this organization");
+        OrganizationMember member = organizationMemberRepository
+                .findByOrganizationIdAndUserId(cmd.getOrganizationId(), cmd.getUserId())
+                .orElse(null);
+
+        if (member == null) {
+            member = OrganizationMember.create(
+                    organization.getId(),
+                    cmd.getUserId(),
+                    cmd.getRole()
+            );
+        } else if (member.isRemoved()) {
+            member.pending();
+            member.changeRole(cmd.getRole());
+        } else {
+            throw new ConflictException("User is already a member of this organization.");
         }
 
-        OrganizationMember member = OrganizationMember.create(
-                organization.getId(),
-                cmd.getUserId(),
-                cmd.getRole()
-        );
         member = organizationMemberRepository.save(member);
 
-        OrganizationInvitation invitation = OrganizationInvitation.create(
-                UuidCreator.getTimeOrderedEpoch(),
+        createInvitation(
                 organization.getId(),
                 user.getEmail(),
                 cmd.getRole(),
-                actor.getUserId(),
+                actor.getUserId()
+        );
+        return OrganizationMemberResult.from(member);
+    }
+
+    private void createInvitation(
+            Long organizationId,
+            String email,
+            MemberRole role,
+            Long invitedBy
+    ) {
+        OrganizationInvitation invitation = OrganizationInvitation.create(
+                UuidCreator.getTimeOrderedEpoch(),
+                organizationId,
+                email,
+                role,
+                invitedBy,
                 TokenGenerator.generate(),
-                Instant.now().plus(3, ChronoUnit.DAYS)
+                Instant.now().plus(INVITATION_EXPIRE_DAYS, ChronoUnit.DAYS)
         );
 
-        invitation = invitationRepository.save(invitation);
-
-        // Will publish message for noti & email at here
-
-        return OrganizationMemberResult.from(member);
+        invitationRepository.save(invitation);
     }
 }
