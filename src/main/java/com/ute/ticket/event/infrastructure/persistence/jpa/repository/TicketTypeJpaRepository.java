@@ -1,5 +1,6 @@
 package com.ute.ticket.event.infrastructure.persistence.jpa.repository;
 
+import com.ute.ticket.event.domain.enums.TicketTypeStatus;
 import com.ute.ticket.event.infrastructure.persistence.jpa.entity.TicketTypeJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,5 @@ public interface TicketTypeJpaRepository extends JpaRepository<TicketTypeJpaEnti
     List<TicketTypeJpaEntity> findBySessionId(Long sessionId);
     Optional<TicketTypeJpaEntity> findBySessionIdAndNameIgnoreCase(Long sessionId, String name);
     boolean existsBySessionIdAndNameIgnoreCase(Long sessionId, String name);
+    Optional<TicketTypeJpaEntity> findByIdAndDeletedAtIsNullAndStatus(Long id, TicketTypeStatus status);
 }

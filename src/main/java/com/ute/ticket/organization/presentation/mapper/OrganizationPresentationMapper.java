@@ -15,7 +15,7 @@ import com.ute.ticket.organization.presentation.dto.UpdateOrganizationProfileReq
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrganizationMapper {
+public class OrganizationPresentationMapper {
 
     public CreateOrganizationCommand toCommand(CreateOrganizationRequest request, Long ownerId) {
         return CreateOrganizationCommand.builder()

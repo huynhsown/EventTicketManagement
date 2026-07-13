@@ -6,7 +6,7 @@ import com.ute.ticket.organization.presentation.dto.ChangeOrganizationSlugReques
 import com.ute.ticket.organization.presentation.dto.CreateOrganizationRequest;
 import com.ute.ticket.organization.presentation.dto.TransferOwnershipRequest;
 import com.ute.ticket.organization.presentation.dto.UpdateOrganizationProfileRequest;
-import com.ute.ticket.organization.presentation.mapper.OrganizationMapper;
+import com.ute.ticket.organization.presentation.mapper.OrganizationPresentationMapper;
 import com.ute.ticket.shared.application.security.CurrentUser;
 import com.ute.ticket.shared.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,14 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrganizationController {
 
     private final OrganizationFacade organizationFacade;
-    private final OrganizationMapper organizationMapper;
+    private final OrganizationPresentationMapper organizationPresentationMapper;
     private final CurrentUser currentUser;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new organization")
     public ApiResponse<OrganizationResult> create(@Valid @RequestBody CreateOrganizationRequest request) {
-        var command = organizationMapper.toCommand(request, currentUser.getUserId());
+        var command = organizationPresentationMapper.toCommand(request, currentUser.getUserId());
         var result = organizationFacade.createOrganization(command);
         return ApiResponse.<OrganizationResult>builder()
                 .success(true)
@@ -63,7 +63,7 @@ public class OrganizationController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateOrganizationProfileRequest request
     ) {
-        var command = organizationMapper.toCommand(id, request, currentUser.getUserId());
+        var command = organizationPresentationMapper.toCommand(id, request, currentUser.getUserId());
         var result = organizationFacade.updateOrganizationProfile(command);
         return ApiResponse.<OrganizationResult>builder()
                 .success(true)
@@ -78,7 +78,7 @@ public class OrganizationController {
             @PathVariable Long id,
             @Valid @RequestBody TransferOwnershipRequest request
     ) {
-        var command = organizationMapper.toCommand(id, request, currentUser.getUserId());
+        var command = organizationPresentationMapper.toCommand(id, request, currentUser.getUserId());
         var result = organizationFacade.transferOwnership(command);
         return ApiResponse.<OrganizationResult>builder()
                 .success(true)
@@ -93,7 +93,7 @@ public class OrganizationController {
             @PathVariable Long id,
             @Valid @RequestBody ChangeOrganizationSlugRequest request
     ) {
-        var command = organizationMapper.toCommand(id, request, currentUser.getUserId());
+        var command = organizationPresentationMapper.toCommand(id, request, currentUser.getUserId());
         var result = organizationFacade.changeOrganizationSlug(command);
         return ApiResponse.<OrganizationResult>builder()
                 .success(true)

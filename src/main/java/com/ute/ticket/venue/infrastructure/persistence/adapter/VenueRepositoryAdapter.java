@@ -44,6 +44,12 @@ public class VenueRepositoryAdapter implements VenueRepository {
     }
 
     @Override
+    public Optional<Venue> findActiveById(Long id) {
+        return venueJpaRepository.findByIdAndDeletedAtIsNullAndStatus(id, VenueStatus.ACTIVE)
+                .map(venueMapper::toDomain);
+    }
+
+    @Override
     public boolean existsActiveById(Long id) {
         return venueJpaRepository.existsByIdAndDeletedAtIsNullAndStatus(id, VenueStatus.ACTIVE);
     }

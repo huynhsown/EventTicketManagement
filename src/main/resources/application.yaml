@@ -3,9 +3,9 @@ spring:
     name: ticket
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/ticket_db
-    username: ticket_user
-    password: ticket_pass
+    url: jdbc:postgresql://db.jwsnlbgnrovlaoijddye.supabase.co:5432/postgres
+    username: postgres
+    password: t2LbjzNzKvz7SQYw
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -35,7 +35,7 @@ keycloak:
   app:
     realm: ${KEYCLOAK_APP_REALM:event-ticket}
     clientId: ${KEYCLOAK_APP_CLIENT_ID:event-ticket-app}
-    clientSecret: ${KEYCLOAK_APP_CLIENT_SECRET:O1tucNY6Eta3eFPLzkA8TmlgAVrWlwWLOn0qlxDg4IkFBM5WQeZXQAtwzYL4OqmOWfW2mTGpiBPP75KFHBZeDY}
+    clientSecret: ${KEYCLOAK_APP_CLIENT_SECRET:ndnm7CiigWjGySZLFGMRHJbWeH27JrTgVFXfh5w0ED1vy07BS1wxIoiQtSeC7yHdOvzZrKYiUCWOx7H566iIEx}
     roles:
       user: USER
       admin: ADMIN
@@ -48,6 +48,10 @@ springdoc:
 
 server:
   port: 8090
+
+event:
+  max-categories-per-event: 10
+  auto-create-inventory: true
 
 logging:
   level:

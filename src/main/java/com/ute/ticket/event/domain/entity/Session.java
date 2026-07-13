@@ -193,6 +193,12 @@ public class Session extends BaseDomain {
         return TERMINAL_STATUSES.contains(status);
     }
 
+    public void ensureBelongsToEvent(Long eventId) {
+        if (eventId == null || !eventId.equals(this.eventId)) {
+            throw new DomainConflictException("Session does not belong to the specified event.");
+        }
+    }
+
     public boolean overlaps(Session other) {
         return startTime.isBefore(other.endTime) && other.startTime.isBefore(endTime);
     }

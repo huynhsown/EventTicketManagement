@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface EventRepository {
     Event save(Event event);
     Optional<Event> findById(Long id);
+    Optional<Event> findActiveById(Long id);
+    long sumTotalStockByEventId(Long eventId);
 }

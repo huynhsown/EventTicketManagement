@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -33,6 +34,22 @@ public class EventCategoryRepositoryAdapter implements EventCategoryRepository {
                 .stream()
                 .map(eventCategoryMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<EventCategory> findByEventId(Long eventId) {
+        return eventCategoryJpaRepository.findByEventId(eventId)
+                .stream()
+                .map(eventCategoryMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public void deleteIn(Long eventId, Set<Long> categoryIds) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            return;
+        }
+        eventCategoryJpaRepository.deleteByEventIdAndCategoryIdIn(eventId, categoryIds);
     }
 
     @Override

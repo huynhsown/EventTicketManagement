@@ -4,7 +4,7 @@ import com.ute.ticket.organization.application.facade.OrganizationFacade;
 import com.ute.ticket.organization.application.result.OrganizationMemberResult;
 import com.ute.ticket.organization.presentation.dto.AddOrganizationMemberRequest;
 import com.ute.ticket.organization.presentation.dto.ChangeMemberRoleRequest;
-import com.ute.ticket.organization.presentation.mapper.OrganizationMapper;
+import com.ute.ticket.organization.presentation.mapper.OrganizationPresentationMapper;
 import com.ute.ticket.shared.application.security.CurrentUser;
 import com.ute.ticket.shared.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrganizationMemberController {
 
     private final OrganizationFacade organizationFacade;
-    private final OrganizationMapper organizationMapper;
+    private final OrganizationPresentationMapper organizationPresentationMapper;
     private final CurrentUser currentUser;
 
     @PostMapping("/{id}/members")
@@ -38,7 +38,7 @@ public class OrganizationMemberController {
             @PathVariable Long id,
             @Valid @RequestBody AddOrganizationMemberRequest request
     ) {
-        var command = organizationMapper.toCommand(id, request, currentUser.getUserId());
+        var command = organizationPresentationMapper.toCommand(id, request, currentUser.getUserId());
         var result = organizationFacade.addOrganizationMember(command);
         return ApiResponse.<OrganizationMemberResult>builder()
                 .success(true)
@@ -68,7 +68,7 @@ public class OrganizationMemberController {
             @PathVariable Long targetUserId,
             @Valid @RequestBody ChangeMemberRoleRequest request
     ) {
-        var command = organizationMapper.toCommand(id, targetUserId, request, currentUser.getUserId());
+        var command = organizationPresentationMapper.toCommand(id, targetUserId, request, currentUser.getUserId());
         var result = organizationFacade.changeMemberRole(command);
         return ApiResponse.<OrganizationMemberResult>builder()
                 .success(true)

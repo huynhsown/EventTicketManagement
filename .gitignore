@@ -37,3 +37,8 @@ AGENTS.md
 .specify/
 specs/
 scenario
+
+### Universal ###
+.DS_Store
+Thumbs.db
+*.log

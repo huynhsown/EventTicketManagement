@@ -37,4 +37,15 @@ public class EventRepositoryAdapter implements EventRepository {
         return eventJpaRepository.findById(id)
                 .map(eventMapper::toDomain);
     }
+
+    @Override
+    public Optional<Event> findActiveById(Long id) {
+        return eventJpaRepository.findByIdAndDeletedAtIsNull(id)
+                .map(eventMapper::toDomain);
+    }
+
+    @Override
+    public long sumTotalStockByEventId(Long eventId) {
+        return eventJpaRepository.sumTotalStockByEventId(eventId);
+    }
 }

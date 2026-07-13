@@ -12,6 +12,8 @@ public interface VenueRepository {
 
     Optional<Venue> findById(Long id);
 
+    Optional<Venue> findActiveById(Long id);
+
     boolean existsActiveById(Long id);
 
     PageInfo<Venue> search(
