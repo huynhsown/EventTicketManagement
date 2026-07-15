@@ -25,6 +25,16 @@ spring:
     locations: classpath:db/migration
     validate-on-migrate: true
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URIS:http://localhost:9200}
+
 keycloak:
   serverUrl: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
   admin:
