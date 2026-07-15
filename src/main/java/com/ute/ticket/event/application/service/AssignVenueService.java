@@ -3,10 +3,11 @@ package com.ute.ticket.event.application.service;
 import com.ute.ticket.event.application.command.AssignVenueCommand;
 import com.ute.ticket.event.application.port.in.AssignVenueUseCase;
 import com.ute.ticket.event.application.port.out.EventRepository;
-import com.ute.ticket.event.application.port.out.SessionRepository;
 import com.ute.ticket.event.application.result.EventResult;
 import com.ute.ticket.event.domain.entity.Event;
+import com.ute.ticket.event.domain.event.EventVenueAssigned;
 import com.ute.ticket.organization.application.port.out.OrganizationMemberRepository;
+import com.ute.ticket.shared.application.event.EventPublisher;
 import com.ute.ticket.shared.exception.BadRequestException;
 import com.ute.ticket.shared.exception.ConflictException;
 import com.ute.ticket.shared.exception.ForbiddenException;
@@ -23,9 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AssignVenueService implements AssignVenueUseCase {
 
     private final EventRepository eventRepository;
-    private final SessionRepository sessionRepository;
     private final VenueRepository venueRepository;
     private final OrganizationMemberRepository organizationMemberRepository;
+    private final EventPublisher eventPublisher;
 
     @Override
     public EventResult execute(AssignVenueCommand cmd) {
@@ -49,6 +50,8 @@ public class AssignVenueService implements AssignVenueUseCase {
 
         event.assignVenue(venue.getId());
         event = eventRepository.save(event);
+
+        eventPublisher.publish(new EventVenueAssigned(event.getId(), venue.getId()));
 
         return EventResult.from(event);
     }

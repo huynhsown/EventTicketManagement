@@ -1,6 +1,6 @@
 package com.ute.ticket.event.domain.event;
 
-import com.ute.ticket.event.domain.entity.Event;
+import java.util.Set;
 
-public record EventCreated(Event event) {
+public record EventCreated(Long eventId, Set<Long> categoryIds) {
 }

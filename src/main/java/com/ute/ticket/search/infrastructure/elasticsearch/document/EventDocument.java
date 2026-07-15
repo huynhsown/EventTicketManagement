@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "events")
+@Document(indexName = "events", createIndex = true)
 @Setting(settingPath = "elasticsearch/events-settings.json")
 public class EventDocument {
 
@@ -88,12 +88,12 @@ public class EventDocument {
     @Field(type = FieldType.Boolean)
     private Boolean hasAvailableTickets;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_optional_time)
+    @Field(type = FieldType.Date, format = DateFormat.epoch_millis)
     private Instant publishedAt;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_optional_time)
+    @Field(type = FieldType.Date, format = DateFormat.epoch_millis)
     private Instant createdAt;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_optional_time)
+    @Field(type = FieldType.Date, format = DateFormat.epoch_millis)
     private Instant updatedAt;
 }

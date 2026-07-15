@@ -10,5 +10,7 @@ public interface EventIndexer {
 
     void updateStatus(Long eventId, String status, Instant publishedAt);
 
+    void updateVenue(Long eventId, Long venueId, String venueName, String venueCity);
+
     void delete(Long eventId);
 }

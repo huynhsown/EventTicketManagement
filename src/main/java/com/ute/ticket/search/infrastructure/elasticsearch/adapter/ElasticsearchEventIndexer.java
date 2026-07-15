@@ -26,11 +26,30 @@ public class ElasticsearchEventIndexer implements EventIndexer {
 
     @Override
     public void updateStatus(Long eventId, String status, Instant publishedAt) {
-        Document document = Document.create();
-        document.put("status", status);
-        if (publishedAt != null) {
-            document.put("publishedAt", publishedAt);
+        try {
+            Document document = Document.create();
+            document.put("status", status);
+            if (publishedAt != null) {
+                document.put("publishedAt", publishedAt.toEpochMilli());
+            }
+
+            UpdateQuery updateQuery = UpdateQuery.builder(String.valueOf(eventId))
+                    .withDocument(document)
+                    .build();
+
+            elasticsearchOperations.update(updateQuery, INDEX);
         }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public void updateVenue(Long eventId, Long venueId, String venueName, String venueCity) {
+        Document document = Document.create();
+        document.put("venueId", venueId);
+        document.put("venueName", venueName);
+        document.put("venueCity", venueCity);
 
         UpdateQuery updateQuery = UpdateQuery.builder(String.valueOf(eventId))
                 .withDocument(document)

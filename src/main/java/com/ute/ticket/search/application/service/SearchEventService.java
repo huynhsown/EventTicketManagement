@@ -19,19 +19,26 @@ public class SearchEventService implements SearchEventUseCase {
 
     @Override
     public PageInfo<EventSearchResult> execute(SearchEventCommand cmd) {
-        PageInfo<EventDocument> page = eventSearchRepository.search(cmd);
+        try {
+            PageInfo<EventDocument> page = eventSearchRepository.search(cmd);
 
-        return PageInfo.<EventSearchResult>builder()
-                .pageContent(page.getPageContent().stream().map(this::toResult).toList())
-                .number(page.getNumber())
-                .size(page.getSize())
-                .totalElements(page.getTotalElements())
-                .totalPages(page.getTotalPages())
-                .empty(page.isEmpty())
-                .numberOfElements(page.getNumberOfElements())
-                .hasNextPage(page.isHasNextPage())
-                .hasPreviousPage(page.isHasPreviousPage())
-                .build();
+            return PageInfo.<EventSearchResult>builder()
+                    .pageContent(page.getPageContent().stream().map(this::toResult).toList())
+                    .number(page.getNumber())
+                    .size(page.getSize())
+                    .totalElements(page.getTotalElements())
+                    .totalPages(page.getTotalPages())
+                    .empty(page.isEmpty())
+                    .numberOfElements(page.getNumberOfElements())
+                    .hasNextPage(page.isHasNextPage())
+                    .hasPreviousPage(page.isHasPreviousPage())
+                    .build();
+
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());;
+        }
+        return null;
     }
 
     private EventSearchResult toResult(EventDocument doc) {

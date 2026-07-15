@@ -10,8 +10,9 @@ import com.ute.ticket.event.application.result.EventReadinessResult.ReadinessChe
 import com.ute.ticket.event.application.result.EventResult;
 import com.ute.ticket.event.domain.entity.Event;
 import com.ute.ticket.event.domain.enums.EventStatus;
+import com.ute.ticket.event.domain.event.EventPublished;
 import com.ute.ticket.organization.application.port.out.OrganizationMemberRepository;
-import com.ute.ticket.search.application.port.out.EventIndexer;
+import com.ute.ticket.shared.application.event.EventPublisher;
 import com.ute.ticket.shared.exception.ConflictException;
 import com.ute.ticket.shared.exception.ForbiddenException;
 import com.ute.ticket.shared.exception.NotFoundException;
@@ -30,7 +31,7 @@ public class PublishEventService implements PublishEventUseCase {
     private final EventRepository eventRepository;
     private final OrganizationMemberRepository organizationMemberRepository;
     private final VerifyEventReadyForPublishingUseCase verifyEventReadyForPublishingUseCase;
-    private final EventIndexer eventIndexer;
+    private final EventPublisher eventPublisher;
 
     @Override
     public EventResult execute(PublishEventCommand cmd) {
@@ -70,7 +71,11 @@ public class PublishEventService implements PublishEventUseCase {
         event.publish();
         event = eventRepository.save(event);
 
-        eventIndexer.updateStatus(event.getId(), event.getStatus().name(), event.getPublishedAt());
+        eventPublisher.publish(new EventPublished(
+                event.getId(),
+                event.getStatus(),
+                event.getPublishedAt()
+        ));
 
         return EventResult.from(event);
     }
