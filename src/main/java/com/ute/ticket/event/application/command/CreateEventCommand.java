@@ -12,6 +12,7 @@ public class CreateEventCommand {
     private Long organizationId;
     private Long userId;
     private String title;
+    private String slug;
     private String description;
     private Long venueId;
     private Set<Long> categoryIds;

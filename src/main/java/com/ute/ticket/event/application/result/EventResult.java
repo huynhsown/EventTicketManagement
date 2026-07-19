@@ -8,6 +8,7 @@ public record EventResult(
         Long organizationId,
         Long venueId,
         String title,
+        String slug,
         String description,
         String bannerUrl,
         EventStatus status
@@ -18,6 +19,7 @@ public record EventResult(
                 event.getOrganizationId(),
                 event.getVenueId(),
                 event.getTitle(),
+                event.getSlug(),
                 event.getDescription(),
                 event.getBannerUrl(),
                 event.getStatus()

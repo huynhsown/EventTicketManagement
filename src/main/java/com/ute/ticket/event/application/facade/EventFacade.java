@@ -6,8 +6,10 @@ import com.ute.ticket.event.application.command.PublishEventCommand;
 import com.ute.ticket.event.application.command.VerifyEventReadyForPublishingCommand;
 import com.ute.ticket.event.application.port.in.AssignVenueUseCase;
 import com.ute.ticket.event.application.port.in.CreateEventUseCase;
+import com.ute.ticket.event.application.port.in.GetEventDetailUseCase;
 import com.ute.ticket.event.application.port.in.PublishEventUseCase;
 import com.ute.ticket.event.application.port.in.VerifyEventReadyForPublishingUseCase;
+import com.ute.ticket.event.application.result.EventDetailResult;
 import com.ute.ticket.event.application.result.EventReadinessResult;
 import com.ute.ticket.event.application.result.EventResult;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class EventFacade {
     private final AssignVenueUseCase assignVenueUseCase;
     private final VerifyEventReadyForPublishingUseCase verifyEventReadyForPublishingUseCase;
     private final PublishEventUseCase publishEventUseCase;
+    private final GetEventDetailUseCase getEventDetailUseCase;
 
     public EventResult createEvent(CreateEventCommand cmd) {
         return createEventUseCase.execute(cmd);
@@ -44,5 +47,9 @@ public class EventFacade {
                 .userId(userId)
                 .build();
         return publishEventUseCase.execute(command);
+    }
+
+    public EventDetailResult getEventDetail(String slug) {
+        return getEventDetailUseCase.execute(slug);
     }
 }

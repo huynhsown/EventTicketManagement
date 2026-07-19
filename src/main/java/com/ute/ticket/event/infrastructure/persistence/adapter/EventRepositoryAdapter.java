@@ -45,6 +45,17 @@ public class EventRepositoryAdapter implements EventRepository {
     }
 
     @Override
+    public Optional<Event> findBySlug(String slug) {
+        return eventJpaRepository.findBySlugAndDeletedAtIsNull(slug)
+                .map(eventMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsBySlug(String slug) {
+        return eventJpaRepository.existsBySlug(slug);
+    }
+
+    @Override
     public long sumTotalStockByEventId(Long eventId) {
         return eventJpaRepository.sumTotalStockByEventId(eventId);
     }

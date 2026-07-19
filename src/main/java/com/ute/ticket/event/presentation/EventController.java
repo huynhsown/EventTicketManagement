@@ -4,11 +4,11 @@ import com.ute.ticket.event.application.facade.EventFacade;
 import com.ute.ticket.event.application.result.EventReadinessResult;
 import com.ute.ticket.event.application.result.EventResult;
 import com.ute.ticket.event.presentation.dto.AssignVenueRequest;
-import com.ute.ticket.event.presentation.dto.ChangeEventCategoryRequest;
 import com.ute.ticket.event.presentation.dto.CreateEventRequest;
+import com.ute.ticket.event.presentation.dto.EventDetailResponse;
 import com.ute.ticket.event.presentation.mapper.AssignVenueMapper;
-import com.ute.ticket.event.presentation.mapper.ChangeEventCategoryMapper;
 import com.ute.ticket.event.presentation.mapper.CreateEventMapper;
+import com.ute.ticket.event.presentation.mapper.EventDetailMapper;
 import com.ute.ticket.shared.application.security.CurrentUser;
 import com.ute.ticket.shared.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +34,7 @@ public class EventController {
     private final EventFacade eventFacade;
     private final CreateEventMapper createEventMapper;
     private final AssignVenueMapper assignVenueMapper;
+    private final EventDetailMapper eventDetailMapper;
     private final CurrentUser currentUser;
 
     @PostMapping
@@ -60,6 +61,17 @@ public class EventController {
         return ApiResponse.<EventResult>builder()
                 .success(true)
                 .message("Venue assigned successfully")
+                .data(result)
+                .build();
+    }
+
+    @GetMapping("/{slug}")
+    @Operation(summary = "Get public event detail by slug")
+    public ApiResponse<EventDetailResponse> getDetail(@PathVariable String slug) {
+        var result = eventDetailMapper.toResponse(eventFacade.getEventDetail(slug));
+        return ApiResponse.<EventDetailResponse>builder()
+                .success(true)
+                .message("Event detail retrieved successfully")
                 .data(result)
                 .build();
     }

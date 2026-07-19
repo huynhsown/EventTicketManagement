@@ -8,6 +8,9 @@ import com.ute.ticket.event.infrastructure.persistence.jpa.repository.InventoryJ
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class InventoryRepositoryAdapter implements InventoryRepository {
@@ -25,5 +28,12 @@ public class InventoryRepositoryAdapter implements InventoryRepository {
     @Override
     public boolean existsByTicketTypeId(Long ticketTypeId) {
         return inventoryJpaRepository.existsById(ticketTypeId);
+    }
+
+    @Override
+    public List<Inventory> findByIdsIn(Collection<Long> ticketTypeIds) {
+        return inventoryJpaRepository.findByTicketTypeIdIn(ticketTypeIds).stream()
+                .map(inventoryMapper::toDomain)
+                .toList();
     }
 }

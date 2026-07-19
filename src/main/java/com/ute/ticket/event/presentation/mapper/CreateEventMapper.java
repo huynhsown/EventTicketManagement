@@ -12,6 +12,7 @@ public class CreateEventMapper {
                 .organizationId(request.getOrganizationId())
                 .userId(userId)
                 .title(request.getTitle())
+                .slug(request.getSlug())
                 .description(request.getDescription())
                 .venueId(request.getVenueId())
                 .categoryIds(request.getCategoryIds())

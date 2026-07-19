@@ -17,7 +17,9 @@ public interface EventJpaRepository extends JpaRepository<EventJpaEntity, Long> 
     List<EventJpaEntity> findByOrganizationIdAndStatus(Long organizationId, EventStatus status);
     List<EventJpaEntity> findByStatus(EventStatus status);
     Optional<EventJpaEntity> findByIdAndDeletedAtIsNull(Long eventId);
+    Optional<EventJpaEntity> findBySlugAndDeletedAtIsNull(String slug);
     boolean existsByOrganizationIdAndTitle(Long organizationId, String title);
+    boolean existsBySlug(String slug);
 
     @Query("select coalesce(sum(i.totalStock), 0) " +
             "from InventoryJpaEntity i " +

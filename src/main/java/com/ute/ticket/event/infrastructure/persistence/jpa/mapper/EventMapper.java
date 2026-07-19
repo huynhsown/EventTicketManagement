@@ -13,6 +13,7 @@ public class EventMapper {
                 .organizationId(entity.getOrganizationId())
                 .venueId(entity.getVenueId())
                 .title(entity.getTitle())
+                .slug(entity.getSlug())
                 .description(entity.getDescription())
                 .bannerUrl(entity.getBannerUrl())
                 .status(entity.getStatus())
@@ -32,6 +33,7 @@ public class EventMapper {
                 .organizationId(domain.getOrganizationId())
                 .venueId(domain.getVenueId())
                 .title(domain.getTitle())
+                .slug(domain.getSlug())
                 .description(domain.getDescription())
                 .bannerUrl(domain.getBannerUrl())
                 .status(domain.getStatus())
@@ -48,6 +50,7 @@ public class EventMapper {
     public void updateEntity(EventJpaEntity entity, Event domain) {
         entity.setVenueId(domain.getVenueId());
         entity.setTitle(domain.getTitle());
+        entity.setSlug(domain.getSlug());
         entity.setDescription(domain.getDescription());
         entity.setBannerUrl(domain.getBannerUrl());
         entity.setStatus(domain.getStatus());

@@ -22,6 +22,7 @@ public class Event extends BaseDomain {
     private static final int MAX_TITLE_LENGTH = 255;
     private static final int MAX_DESCRIPTION_LENGTH = 4000;
     private static final int MAX_BANNER_URL_LENGTH = 2048;
+    private static final int MAX_SLUG_LENGTH = 255;
 
     private static final Set<EventStatus> TERMINAL_STATUSES =
             EnumSet.of(EventStatus.CANCELLED, EventStatus.ARCHIVED);
@@ -30,6 +31,7 @@ public class Event extends BaseDomain {
     private final Long organizationId;
     private Long venueId;
     private String title;
+    private String slug;
     private String description;
     private String bannerUrl;
     private EventStatus status;
@@ -38,6 +40,7 @@ public class Event extends BaseDomain {
     public static Event create(
             Long organizationId,
             String title,
+            String slug,
             String description,
             String bannerUrl,
             Long venueId
@@ -47,12 +50,14 @@ public class Event extends BaseDomain {
         }
 
         validateTitle(title);
+        validateSlug(slug);
         validateDescription(description);
         validateBannerUrl(bannerUrl);
 
         return Event.builder()
                 .organizationId(organizationId)
                 .title(title.trim())
+                .slug(slug.trim().toLowerCase())
                 .description(description)
                 .bannerUrl(bannerUrl)
                 .venueId(venueId)
@@ -60,10 +65,12 @@ public class Event extends BaseDomain {
                 .build();
     }
 
-    public void rename(String title) {
+    public void rename(String title, String slug) {
         ensureNotTerminal();
         validateTitle(title);
+        validateSlug(slug);
         this.title = title.trim();
+        this.slug = slug.trim().toLowerCase();
     }
 
     public void changeDescription(String description) {
@@ -212,6 +219,20 @@ public class Event extends BaseDomain {
 
         if (title.length() > MAX_TITLE_LENGTH) {
             throw new DomainValidationException("Event title must not exceed " + MAX_TITLE_LENGTH + " characters.");
+        }
+    }
+
+    private static void validateSlug(String slug) {
+        if (slug == null || slug.isBlank()) {
+            throw new DomainValidationException("Event slug cannot be blank.");
+        }
+
+        if (slug.length() > MAX_SLUG_LENGTH) {
+            throw new DomainValidationException("Event slug must not exceed " + MAX_SLUG_LENGTH + " characters.");
+        }
+
+        if (!slug.matches("^[a-z0-9-]+$")) {
+            throw new DomainValidationException("Event slug must be lowercase alphanumeric with hyphens only.");
         }
     }
 

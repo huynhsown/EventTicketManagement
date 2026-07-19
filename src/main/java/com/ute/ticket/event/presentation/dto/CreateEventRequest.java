@@ -29,6 +29,10 @@ public class CreateEventRequest {
     @Schema(description = "Event title", example = "UTE Tech Conference 2026")
     private String title;
 
+    @Size(max = 255)
+    @Schema(description = "Unique slug (auto-generated from title if empty)", example = "ute-tech-conference-2026")
+    private String slug;
+
     @Size(max = 4000)
     @Schema(description = "Event description", example = "Annual technology conference at UTE")
     private String description;

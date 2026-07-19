@@ -42,3 +42,7 @@ scenario
 .DS_Store
 Thumbs.db
 *.log
+
+jmeter/results.jtl
+jmeter/jmeter.log
+jmeter/reports

@@ -10,6 +10,7 @@ import com.ute.ticket.shared.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,13 @@ public class TicketTypeRepositoryAdapter implements TicketTypeRepository {
     @Override
     public List<TicketType> findBySessionId(Long sessionId) {
         return ticketTypeJpaRepository.findBySessionId(sessionId).stream()
+                .map(ticketTypeMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<TicketType> findBySessionIdsIn(Collection<Long> sessionIds) {
+        return ticketTypeJpaRepository.findBySessionIdIn(sessionIds).stream()
                 .map(ticketTypeMapper::toDomain)
                 .toList();
     }

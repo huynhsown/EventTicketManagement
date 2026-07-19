@@ -41,6 +41,9 @@ public class EventJpaEntity extends BaseEntity {
     @Column(name = "title", length = 255, nullable = false)
     private String title;
 
+    @Column(name = "slug", length = 255, nullable = false, unique = true)
+    private String slug;
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
