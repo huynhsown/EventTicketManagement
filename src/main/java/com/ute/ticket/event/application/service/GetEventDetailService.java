@@ -1,12 +1,7 @@
 package com.ute.ticket.event.application.service;
 
 import com.ute.ticket.event.application.port.in.GetEventDetailUseCase;
-import com.ute.ticket.event.application.port.out.CategoryRepository;
-import com.ute.ticket.event.application.port.out.EventCategoryRepository;
-import com.ute.ticket.event.application.port.out.EventRepository;
-import com.ute.ticket.event.application.port.out.InventoryRepository;
-import com.ute.ticket.event.application.port.out.SessionRepository;
-import com.ute.ticket.event.application.port.out.TicketTypeRepository;
+import com.ute.ticket.event.application.port.out.*;
 import com.ute.ticket.event.application.result.EventDetailResult;
 import com.ute.ticket.event.application.result.EventDetailResult.CategoryRef;
 import com.ute.ticket.event.application.result.EventDetailResult.InventoryInfo;
@@ -59,8 +54,16 @@ public class GetEventDetailService implements GetEventDetailUseCase {
     private final OrganizationRepository organizationRepository;
     private final VenueRepository venueRepository;
 
+    private final EventCachePort eventCachePort;
+
     @Override
     public EventDetailResult execute(String slug) {
+
+        EventDetailResult cached = eventCachePort.findBySlug(slug);
+        if (cached != null) {
+            return cached;
+        }
+
         Event event = eventRepository.findBySlug(slug)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
 
@@ -68,7 +71,9 @@ public class GetEventDetailService implements GetEventDetailUseCase {
             throw new NotFoundException("Event not found");
         }
 
-        return buildDetail(event);
+        EventDetailResult result = buildDetail(event);
+        eventCachePort.save(result);
+        return result;
     }
 
     private EventDetailResult buildDetail(Event event) {
@@ -80,6 +85,7 @@ public class GetEventDetailService implements GetEventDetailUseCase {
 
         return new EventDetailResult(
                 event.getId(),
+                event.getSlug(),
                 event.getTitle(),
                 event.getDescription(),
                 event.getStatus(),

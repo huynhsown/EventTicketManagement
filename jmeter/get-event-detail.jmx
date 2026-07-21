@@ -27,8 +27,8 @@
       <ThreadGroup guiclass="ThreadGroupGui"
                    testclass="ThreadGroup"
                    testname="100 Users">
-        <stringProp name="ThreadGroup.num_threads">100</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
+        <stringProp name="ThreadGroup.num_threads">500</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">20</stringProp>
         <elementProp name="ThreadGroup.main_controller"
                      elementType="LoopController">
           <boolProp name="LoopController.continue_forever">false</boolProp>
