@@ -71,7 +71,7 @@ public class PublishEventService implements PublishEventUseCase {
         event.publish();
         event = eventRepository.save(event);
 
-        eventPublisher.publish(new EventPublished(
+        eventPublisher.publishEventPublished(new EventPublished(
                 event.getId(),
                 event.getStatus(),
                 event.getPublishedAt()

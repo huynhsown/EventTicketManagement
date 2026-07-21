@@ -1,4 +1,4 @@
-package com.ute.ticket.search.infrastructure.kafka;
+package com.ute.ticket.search.infrastructure.rabbitmq;
 
 import com.ute.ticket.event.application.port.out.CategoryRepository;
 import com.ute.ticket.event.application.port.out.EventRepository;
@@ -9,11 +9,12 @@ import com.ute.ticket.organization.application.port.out.OrganizationRepository;
 import com.ute.ticket.organization.domain.entity.Organization;
 import com.ute.ticket.search.application.port.out.EventIndexer;
 import com.ute.ticket.search.infrastructure.elasticsearch.document.EventDocument;
+import com.ute.ticket.shared.config.RabbitMQConfig;
 import com.ute.ticket.venue.application.port.out.VenueRepository;
 import com.ute.ticket.venue.domain.entity.Venue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.Set;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EventCreatedKafkaListener {
+public class EventCreatedRabbitMQListener {
 
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
@@ -30,7 +31,7 @@ public class EventCreatedKafkaListener {
     private final VenueRepository venueRepository;
     private final EventIndexer eventIndexer;
 
-    @KafkaListener(topics = "event.event-created", groupId = "search")
+    @RabbitListener(queues = RabbitMQConfig.EVENT_CREATED_QUEUE)
     public void onEventCreated(EventCreated eventCreated) {
         Long eventId = eventCreated.eventId();
         Set<Long> categoryIds = eventCreated.categoryIds();
