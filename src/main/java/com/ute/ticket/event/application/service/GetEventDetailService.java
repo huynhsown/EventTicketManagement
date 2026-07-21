@@ -32,6 +32,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -56,6 +58,8 @@ public class GetEventDetailService implements GetEventDetailUseCase {
 
     private final EventCachePort eventCachePort;
 
+    private final ConcurrentHashMap<String, ReentrantLock> locks = new ConcurrentHashMap<>();
+
     @Override
     public EventDetailResult execute(String slug) {
 
@@ -64,16 +68,29 @@ public class GetEventDetailService implements GetEventDetailUseCase {
             return cached;
         }
 
-        Event event = eventRepository.findBySlug(slug)
-                .orElseThrow(() -> new NotFoundException("Event not found"));
+        ReentrantLock lock = locks.computeIfAbsent(slug, l -> new ReentrantLock());
+        lock.lock();
+        try {
+            cached = eventCachePort.findBySlug(slug);
+            if (cached != null) {
+                return cached;
+            }
 
-        if (!PUBLIC_STATUSES.contains(event.getStatus())) {
-            throw new NotFoundException("Event not found");
+            Event event = eventRepository.findBySlug(slug)
+                    .orElseThrow(() -> new NotFoundException("Event not found"));
+
+            if (!PUBLIC_STATUSES.contains(event.getStatus())) {
+                throw new NotFoundException("Event not found");
+            }
+
+            EventDetailResult result = buildDetail(event);
+            eventCachePort.save(result);
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
         }
-
-        EventDetailResult result = buildDetail(event);
-        eventCachePort.save(result);
-        return result;
     }
 
     private EventDetailResult buildDetail(Event event) {
