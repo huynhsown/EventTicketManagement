@@ -10,6 +10,7 @@ import java.util.List;
 
 public record EventDetailResult(
         Long id,
+        String slug,
         String title,
         String description,
         EventStatus status,

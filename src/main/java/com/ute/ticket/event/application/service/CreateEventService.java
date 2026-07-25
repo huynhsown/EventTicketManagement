@@ -63,7 +63,7 @@ public class CreateEventService implements CreateEventUseCase {
 
         assignCategories(event.getId(), cmd.getCategoryIds());
 
-        eventPublisher.publish(new EventCreated(event.getId(), cmd.getCategoryIds()));
+        eventPublisher.publishEventCreated(new EventCreated(event.getId(), cmd.getCategoryIds()));
 
         return EventResult.from(event);
     }

@@ -3,10 +3,15 @@ spring:
     name: ticket
 
   datasource:
-    url: jdbc:postgresql://db.jwsnlbgnrovlaoijddye.supabase.co:5432/postgres
-    username: postgres
-    password: t2LbjzNzKvz7SQYw
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   jpa:
     hibernate:
@@ -25,12 +30,14 @@ spring:
     locations: classpath:db/migration
     validate-on-migrate: true
 
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      acks: all
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VHOST}
+    ssl:
+      enabled: ${RABBITMQ_SSL_ENABLED:true}
 
   elasticsearch:
     uris: ${ELASTICSEARCH_URIS:http://localhost:9200}

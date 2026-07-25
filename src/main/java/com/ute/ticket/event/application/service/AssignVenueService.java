@@ -51,7 +51,7 @@ public class AssignVenueService implements AssignVenueUseCase {
         event.assignVenue(venue.getId());
         event = eventRepository.save(event);
 
-        eventPublisher.publish(new EventVenueAssigned(event.getId(), venue.getId()));
+        eventPublisher.publishEventVenueAssigned(new EventVenueAssigned(event.getId(), venue.getId()));
 
         return EventResult.from(event);
     }

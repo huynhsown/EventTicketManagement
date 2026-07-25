@@ -1,12 +1,7 @@
 package com.ute.ticket.event.application.service;
 
 import com.ute.ticket.event.application.port.in.GetEventDetailUseCase;
-import com.ute.ticket.event.application.port.out.CategoryRepository;
-import com.ute.ticket.event.application.port.out.EventCategoryRepository;
-import com.ute.ticket.event.application.port.out.EventRepository;
-import com.ute.ticket.event.application.port.out.InventoryRepository;
-import com.ute.ticket.event.application.port.out.SessionRepository;
-import com.ute.ticket.event.application.port.out.TicketTypeRepository;
+import com.ute.ticket.event.application.port.out.*;
 import com.ute.ticket.event.application.result.EventDetailResult;
 import com.ute.ticket.event.application.result.EventDetailResult.CategoryRef;
 import com.ute.ticket.event.application.result.EventDetailResult.InventoryInfo;
@@ -37,6 +32,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,16 +56,41 @@ public class GetEventDetailService implements GetEventDetailUseCase {
     private final OrganizationRepository organizationRepository;
     private final VenueRepository venueRepository;
 
+    private final EventCachePort eventCachePort;
+
+    private final ConcurrentHashMap<String, ReentrantLock> locks = new ConcurrentHashMap<>();
+
     @Override
     public EventDetailResult execute(String slug) {
-        Event event = eventRepository.findBySlug(slug)
-                .orElseThrow(() -> new NotFoundException("Event not found"));
 
-        if (!PUBLIC_STATUSES.contains(event.getStatus())) {
-            throw new NotFoundException("Event not found");
+        EventDetailResult cached = eventCachePort.findBySlug(slug);
+        if (cached != null) {
+            return cached;
         }
 
-        return buildDetail(event);
+        ReentrantLock lock = locks.computeIfAbsent(slug, l -> new ReentrantLock());
+        lock.lock();
+        try {
+            cached = eventCachePort.findBySlug(slug);
+            if (cached != null) {
+                return cached;
+            }
+
+            Event event = eventRepository.findBySlug(slug)
+                    .orElseThrow(() -> new NotFoundException("Event not found"));
+
+            if (!PUBLIC_STATUSES.contains(event.getStatus())) {
+                throw new NotFoundException("Event not found");
+            }
+
+            EventDetailResult result = buildDetail(event);
+            eventCachePort.save(result);
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
     }
 
     private EventDetailResult buildDetail(Event event) {
@@ -80,6 +102,7 @@ public class GetEventDetailService implements GetEventDetailUseCase {
 
         return new EventDetailResult(
                 event.getId(),
+                event.getSlug(),
                 event.getTitle(),
                 event.getDescription(),
                 event.getStatus(),
