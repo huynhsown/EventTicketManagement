@@ -10,8 +10,8 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   jpa:
     hibernate:
@@ -31,13 +31,13 @@ spring:
     validate-on-migrate: true
 
   rabbitmq:
-    host: mustang.rmq.cloudamqp.com
-    port: 5671
-    username: fuidxbmu
-    password: xTde7JPzm3AThdAeXaBMfxkRLQtPEA_I
-    virtual-host: fuidxbmu
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VHOST}
     ssl:
-      enabled: true
+      enabled: ${RABBITMQ_SSL_ENABLED:true}
 
   elasticsearch:
     uris: ${ELASTICSEARCH_URIS:http://localhost:9200}
