@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface TicketTypeJpaRepository extends JpaRepository<TicketTypeJpaEntity, Long> {
     List<TicketTypeJpaEntity> findBySessionId(Long sessionId);
     List<TicketTypeJpaEntity> findBySessionIdIn(Collection<Long> sessionIds);
+    List<TicketTypeJpaEntity> findBySessionIdInAndStatus(Collection<Long> sessionIds, TicketTypeStatus status);
     Optional<TicketTypeJpaEntity> findBySessionIdAndNameIgnoreCase(Long sessionId, String name);
     boolean existsBySessionIdAndNameIgnoreCase(Long sessionId, String name);
     Optional<TicketTypeJpaEntity> findByIdAndDeletedAtIsNullAndStatus(Long id, TicketTypeStatus status);

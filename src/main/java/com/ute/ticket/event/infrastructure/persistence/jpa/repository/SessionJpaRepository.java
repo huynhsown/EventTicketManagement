@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SessionJpaRepository extends JpaRepository<SessionJpaEntity, Long> {
+    List<SessionJpaEntity> findByIdIn(Collection<Long> ids);
     List<SessionJpaEntity> findByEventId(Long eventId);
     List<SessionJpaEntity> findByEventIdAndStatus(Long eventId, SessionStatus status);
     List<SessionJpaEntity> findByStartTimeBetween(Instant start, Instant end);
@@ -68,4 +69,11 @@ public interface SessionJpaRepository extends JpaRepository<SessionJpaEntity, Lo
     List<SessionRequiredCapacity> findRequiredCapacitiesByEventId(
             @Param("eventId") Long eventId,
             @Param("terminalSessionStatuses") Collection<SessionStatus> terminalSessionStatuses);
+
+
+    List<SessionJpaEntity> findBySalesStartAtBetweenAndStatus(
+            Instant startTimeAfter,
+            Instant startTimeBefore,
+            SessionStatus sessionStatus
+    );
 }
