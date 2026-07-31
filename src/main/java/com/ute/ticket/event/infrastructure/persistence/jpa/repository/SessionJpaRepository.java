@@ -2,6 +2,7 @@ package com.ute.ticket.event.infrastructure.persistence.jpa.repository;
 
 import com.ute.ticket.event.application.result.SessionRequiredCapacity;
 import com.ute.ticket.event.application.result.VenueSessionConflict;
+import com.ute.ticket.event.domain.enums.InventoryStatus;
 import com.ute.ticket.event.domain.enums.SessionStatus;
 import com.ute.ticket.event.infrastructure.persistence.jpa.entity.SessionJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -76,4 +77,26 @@ public interface SessionJpaRepository extends JpaRepository<SessionJpaEntity, Lo
             Instant startTimeBefore,
             SessionStatus sessionStatus
     );
+
+    @Query("""
+            select count(s.id) > 0
+            from SessionJpaEntity s
+            join TicketTypeJpaEntity t on t.sessionId = s.id
+            join InventoryJpaEntity i on i.ticketTypeId = t.id
+            where s.id = :sessionId
+              and t.id = :ticketTypeId
+              and s.deletedAt is null
+              and s.status = :publishedStatus
+              and s.salesStartAt <= :now
+              and s.salesEndAt >= :now
+              and i.status = :activeInventoryStatus
+              and (i.totalStock - i.reservedStock - i.soldStock) >= :quantity
+            """)
+    boolean existsEligibleForPurchase(
+            @Param("sessionId") Long sessionId,
+            @Param("ticketTypeId") Long ticketTypeId,
+            @Param("publishedStatus") SessionStatus publishedStatus,
+            @Param("activeInventoryStatus") InventoryStatus activeInventoryStatus,
+            @Param("now") Instant now,
+            @Param("quantity") long quantity);
 }

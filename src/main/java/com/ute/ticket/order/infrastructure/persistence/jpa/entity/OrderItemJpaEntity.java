@@ -32,11 +32,11 @@ public class OrderItemJpaEntity extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "order_id", nullable = false)
+    @Column(name = "order_id", nullable = false, insertable = false, updatable = false)
     private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", insertable = false, updatable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private OrderJpaEntity order;
 
     @Column(name = "ticket_type_id", nullable = false)

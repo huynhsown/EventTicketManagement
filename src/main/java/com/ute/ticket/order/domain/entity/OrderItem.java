@@ -1,6 +1,7 @@
 package com.ute.ticket.order.domain.entity;
 
 import com.ute.ticket.shared.domain.BaseDomain;
+import com.ute.ticket.shared.exception.DomainValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -18,6 +19,49 @@ public class OrderItem extends BaseDomain {
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal subtotal;
+
+    public static OrderItem create(
+            Long orderId,
+            Long ticketTypeId,
+            int quantity,
+            BigDecimal unitPrice
+    ) {
+        if (ticketTypeId == null) {
+            throw new DomainValidationException(
+                    "Ticket type id cannot be null."
+            );
+        }
+
+        if (quantity <= 0) {
+            throw new DomainValidationException(
+                    "Quantity must be greater than zero."
+            );
+        }
+
+        if (unitPrice == null) {
+            throw new DomainValidationException(
+                    "Unit price cannot be null."
+            );
+        }
+
+        if (unitPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainValidationException(
+                    "Unit price cannot be negative."
+            );
+        }
+
+        return OrderItem.builder()
+                .orderId(orderId)
+                .ticketTypeId(ticketTypeId)
+                .quantity(quantity)
+                .unitPrice(unitPrice)
+                .subtotal(
+                        unitPrice.multiply(
+                                BigDecimal.valueOf(quantity)
+                        )
+                )
+                .build();
+    }
 
     public void updateQuantity(Integer quantity) {
         if (quantity <= 0) {

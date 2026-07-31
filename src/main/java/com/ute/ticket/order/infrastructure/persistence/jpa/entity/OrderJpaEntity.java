@@ -45,7 +45,7 @@ public class OrderJpaEntity extends BaseEntity {
     @Column(name = "total_amount", precision = 12, scale = 2, nullable = false)
     private BigDecimal totalAmount;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrderItemJpaEntity> items = new ArrayList<>();
 }

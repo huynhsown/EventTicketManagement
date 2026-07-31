@@ -2,6 +2,7 @@ package com.ute.ticket.order.domain.entity;
 
 import com.ute.ticket.order.domain.enums.OrderStatus;
 import com.ute.ticket.shared.domain.BaseDomain;
+import com.ute.ticket.shared.exception.DomainValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -23,6 +24,49 @@ public class Order extends BaseDomain {
     private OrderStatus status;
     private BigDecimal totalAmount;
     private final List<OrderItem> items = new ArrayList<>();
+
+    public static Order create(
+            String code,
+            UUID reservationId,
+            Long userId,
+            List<OrderItem> items
+    ) {
+        if (code == null || code.isBlank()) {
+            throw new DomainValidationException(
+                    "Order code cannot be blank."
+            );
+        }
+
+        if (reservationId == null) {
+            throw new DomainValidationException(
+                    "Order reservation id cannot be null."
+            );
+        }
+
+        if (userId == null) {
+            throw new DomainValidationException(
+                    "Order user id cannot be null."
+            );
+        }
+
+        if (items == null) {
+            throw new DomainValidationException(
+                    "Order items cannot be null."
+            );
+        }
+
+        Order order = Order.builder()
+                .code(code)
+                .reservationId(reservationId)
+                .userId(userId)
+                .status(OrderStatus.PENDING)
+                .totalAmount(BigDecimal.ZERO)
+                .build();
+
+        order.addItems(items);
+
+        return order;
+    }
 
     public void addItem(OrderItem item) {
         if (item == null) {
