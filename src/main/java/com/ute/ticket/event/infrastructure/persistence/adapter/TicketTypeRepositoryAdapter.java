@@ -50,7 +50,10 @@ public class TicketTypeRepositoryAdapter implements TicketTypeRepository {
 
     @Override
     public List<TicketType> findBySessionIdsIn(Collection<Long> sessionIds) {
-        return ticketTypeJpaRepository.findBySessionIdIn(sessionIds).stream()
+        return ticketTypeJpaRepository.findBySessionIdInAndStatus(
+                        sessionIds,
+                        TicketTypeStatus.ACTIVE
+                ).stream()
                 .map(ticketTypeMapper::toDomain)
                 .toList();
     }

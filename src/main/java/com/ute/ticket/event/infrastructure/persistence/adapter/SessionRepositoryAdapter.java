@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,24 @@ public class SessionRepositoryAdapter implements SessionRepository {
     }
 
     @Override
+    public List<Session> saveAll(List<Session> sessions) {
+        List<SessionJpaEntity> entities = sessions.stream()
+                .map(session -> {
+                    if (session.getId() == null || session.getVersion() == null) {
+                        return sessionMapper.toJpaEntity(session);
+                    }
+                    SessionJpaEntity entity = sessionJpaRepository.findById(session.getId())
+                            .orElseThrow(() -> new NotFoundException("Session not found"));
+                    sessionMapper.updateEntity(entity, session);
+                    return entity;
+                })
+                .toList();
+        return sessionJpaRepository.saveAll(entities).stream()
+                .map(sessionMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public Optional<Session> findById(Long id) {
         return sessionJpaRepository.findById(id)
                 .map(sessionMapper::toDomain);
@@ -54,6 +74,13 @@ public class SessionRepositoryAdapter implements SessionRepository {
     public Optional<Session> findActiveById(Long id) {
         return sessionJpaRepository.findByIdAndDeletedAtIsNull(id)
                 .map(sessionMapper::toDomain);
+    }
+
+    @Override
+    public List<Session> findByIds(Collection<Long> ids) {
+        return sessionJpaRepository.findByIdIn(ids).stream()
+                .map(sessionMapper::toDomain)
+                .toList();
     }
 
     @Override
@@ -96,5 +123,16 @@ public class SessionRepositoryAdapter implements SessionRepository {
                 eventId,
                 TERMINAL_SESSION_STATUSES
         );
+    }
+
+    @Override
+    public List<Session> findSessionsStartingSaleWithin(Integer time) {
+        Instant now = Instant.now();
+        Instant upperBound = now.plus(time, ChronoUnit.MINUTES);
+        List<SessionJpaEntity> jpaEntities = sessionJpaRepository
+                .findBySalesStartAtBetweenAndStatus(now, upperBound, SessionStatus.PUBLISHED);
+        return jpaEntities.stream()
+                .map(sessionMapper::toDomain)
+                .toList();
     }
 }

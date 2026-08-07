@@ -2,6 +2,7 @@ package com.ute.ticket.event.infrastructure.persistence.adapter;
 
 import com.ute.ticket.event.application.port.out.InventoryRepository;
 import com.ute.ticket.event.domain.entity.Inventory;
+import com.ute.ticket.event.domain.enums.InventoryStatus;
 import com.ute.ticket.event.infrastructure.persistence.jpa.entity.InventoryJpaEntity;
 import com.ute.ticket.event.infrastructure.persistence.jpa.mapper.InventoryMapper;
 import com.ute.ticket.event.infrastructure.persistence.jpa.repository.InventoryJpaRepository;
@@ -32,7 +33,10 @@ public class InventoryRepositoryAdapter implements InventoryRepository {
 
     @Override
     public List<Inventory> findByIdsIn(Collection<Long> ticketTypeIds) {
-        return inventoryJpaRepository.findByTicketTypeIdIn(ticketTypeIds).stream()
+        return inventoryJpaRepository.findByTicketTypeIdInAndStatus(
+                        ticketTypeIds,
+                        InventoryStatus.ACTIVE
+                ).stream()
                 .map(inventoryMapper::toDomain)
                 .toList();
     }
