@@ -45,3 +45,4 @@ Thumbs.db
 
 jmeter/results.jtl
 jmeter/jmeter.log
+.env

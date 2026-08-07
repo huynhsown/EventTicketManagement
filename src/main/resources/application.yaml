@@ -3,9 +3,9 @@ spring:
     name: ticket
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/ticket_db
-    username: ticket_user
-    password: ticket_pass
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   data:
@@ -31,11 +31,11 @@ spring:
     validate-on-migrate: true
 
   rabbitmq:
-    host: mustang.rmq.cloudamqp.com
-    port: 5671
-    username: fuidxbmu
-    password: xTde7JPzm3AThdAeXaBMfxkRLQtPEA_I
-    virtual-host: fuidxbmu
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VHOST}
     ssl:
       enabled: ${RABBITMQ_SSL_ENABLED:true}
 
