@@ -17,16 +17,16 @@
           </elementProp>
           <elementProp name="SESSION_ID" elementType="Argument">
             <stringProp name="Argument.name">SESSION_ID</stringProp>
-            <stringProp name="Argument.value">6</stringProp>
+            <stringProp name="Argument.value">4</stringProp>
           </elementProp>
           <elementProp name="TICKET_TYPE_ID" elementType="Argument">
             <stringProp name="Argument.name">TICKET_TYPE_ID</stringProp>
-            <stringProp name="Argument.value">12</stringProp>
+            <stringProp name="Argument.value">7</stringProp>
           </elementProp>
-          <elementProp name="QUANTITY" elementType="Argument">
-            <stringProp name="Argument.name">QUANTITY</stringProp>
-            <stringProp name="Argument.value">3</stringProp>
-          </elementProp>
+            <elementProp name="QUANTITY" elementType="Argument">
+              <stringProp name="Argument.name">QUANTITY</stringProp>
+              <stringProp name="Argument.value">1</stringProp>
+            </elementProp>
         </collectionProp>
       </elementProp>
     </TestPlan>
@@ -35,12 +35,12 @@
       <ThreadGroup guiclass="ThreadGroupGui"
                    testclass="ThreadGroup"
                    testname="100 Users">
-        <stringProp name="ThreadGroup.num_threads">500</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
+        <stringProp name="ThreadGroup.num_threads">5000</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">0</stringProp>
         <elementProp name="ThreadGroup.main_controller"
                      elementType="LoopController">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">10</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
       </ThreadGroup>
       <hashTree>

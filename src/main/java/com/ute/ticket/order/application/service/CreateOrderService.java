@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Service("createOrderSQL")
 @RequiredArgsConstructor
 public class CreateOrderService implements CreateOrderUseCase {
 

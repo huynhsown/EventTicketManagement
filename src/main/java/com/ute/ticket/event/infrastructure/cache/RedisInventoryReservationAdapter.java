@@ -14,6 +14,7 @@ public class RedisInventoryReservationAdapter implements InventoryReservationPor
 
     private final StringRedisTemplate redisTemplate;
     private final RedisScript<Long> decreaseInventoryScript;
+    private final RedisScript<Long> releaseInventoryScript;
 
     @Override
     public long decrease(Long sessionId, Long ticketTypeId, long quantity, long nowEpochSeconds) {
@@ -26,6 +27,17 @@ public class RedisInventoryReservationAdapter implements InventoryReservationPor
                 ),
                 String.valueOf(quantity),
                 String.valueOf(nowEpochSeconds)
+        );
+    }
+
+    @Override
+    public long release(Long ticketTypeId, int quantity) {
+        String inventoryKey = "inventory:" + ticketTypeId;
+        String availableKey = "inventory:available:" + ticketTypeId;
+        return redisTemplate.execute(
+                releaseInventoryScript,
+                List.of(inventoryKey, availableKey),
+                String.valueOf(quantity)
         );
     }
 }

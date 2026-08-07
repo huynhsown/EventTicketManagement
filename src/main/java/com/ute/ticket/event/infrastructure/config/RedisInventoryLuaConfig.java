@@ -22,4 +22,12 @@ public class RedisInventoryLuaConfig {
         script.setResultType(Long.class);
         return script;
     }
+
+    @Bean
+    public DefaultRedisScript<Long> releaseInventoryScript() {
+        DefaultRedisScript<Long> script = new DefaultRedisScript<>();
+        script.setLocation(new ClassPathResource("scripts/release_inventory.lua"));
+        script.setResultType(Long.class);
+        return script;
+    }
 }
