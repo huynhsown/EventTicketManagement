@@ -4,9 +4,6 @@ A high-performance, multi-tenant event ticketing platform built with **Java 21**
 
 ## ✨ Key Features
 
-* **Multi-tenant Organization Management**
-  Supports multiple organizations with role-based membership (`OWNER`, `ADMIN`, `MEMBER`) and independent event portfolios.
-
 * **Event & Venue Management**
   Manage venues, events, sessions, ticket types, and event lifecycle states from `DRAFT` to `PUBLISHED`, `LIVE`, `ENDED`, and `CANCELLED`.
 
